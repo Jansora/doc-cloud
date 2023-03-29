@@ -1,9 +1,9 @@
 
-function basic() {
+function install() {
     return [
         {
-            text: '基础知识', collapsed: false, items: [
-                { text: '基础知识', link: '/basic' },
+            text: '安装 kubernetes', collapsed: false, items: [
+                { text: '基础知识', link: '/install' },
             ]
         }
     ]
@@ -29,25 +29,25 @@ function devops() {
 }
 
 export default {
-    title: 'Doc Template',
-    titleTemplate: 'Jansora\'s knowledge base',
+    title: '深入浅出 kubernetes ',
+    titleTemplate: 'Jansora 的知识专栏',
     description: 'Just playing around.',
     cleanUrls: false,
     lang: 'zh-CN',
     lastUpdated: true,
     themeConfig: {
         nav: [
-            { text: '基础', link: '/basic' },
+            { text: '安装配置', link: '/install' },
             { text: '查询', link: '/query' },
             { text: '运维', link: '/devops' },
         ],
         sidebar: {
-            '/basic/': basic(),
+            '/install/': install(),
             '/query/': query(),
             '/devops/': devops(),
         },
         editLink: {
-            pattern: 'https://github.com/Jansora/doc-template/edit/main/docs/:path',
+            pattern: 'https://github.com/Jansora/doc-cloud/edit/main/docs/:path',
             text: 'Edit this page on GitHub'
         },
         footer: {
