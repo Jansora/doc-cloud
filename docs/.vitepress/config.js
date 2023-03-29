@@ -3,7 +3,7 @@ function install() {
     return [
         {
             text: '安装 kubernetes', collapsed: false, items: [
-                { text: '基础知识', link: '/install' },
+                { text: '', link: '/install' },
             ]
         }
     ]
@@ -22,14 +22,18 @@ function devops() {
     return [
         {
             text: '运维', collapsed: false, items: [
-                { text: '运维', link: '/devops' },
+                { text: 'k8s deployment 命令行调整镜像版本', link: '/devops/modify-deployment-from-command-line' },
+
+
+
+
             ]
         }
     ]
 }
 
 export default {
-    title: '深入浅出 kubernetes ',
+    title: '云原生成长记',
     titleTemplate: 'Jansora 的知识专栏',
     description: 'Just playing around.',
     cleanUrls: false,
@@ -39,7 +43,7 @@ export default {
         nav: [
             { text: '安装配置', link: '/install' },
             { text: '查询', link: '/query' },
-            { text: '运维', link: '/devops' },
+            { text: '运维', link: '/devops/modify-deployment-from-command-line' },
         ],
         sidebar: {
             '/install/': install(),
