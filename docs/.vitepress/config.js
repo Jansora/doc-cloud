@@ -23,10 +23,6 @@ function devops() {
         {
             text: '运维', collapsed: false, items: [
                 { text: 'k8s deployment 命令行调整镜像版本', link: '/devops/modify-deployment-from-command-line' },
-
-
-
-
             ]
         }
     ]
