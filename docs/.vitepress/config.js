@@ -24,6 +24,13 @@ function devops() {
             text: '运维', collapsed: false, items: [
                 { text: 'k8s deployment 命令行调整镜像版本', link: '/devops/modify-deployment-from-command-line' },
             ]
+        },
+        {
+            text: '管理你的 kubernetes 集群', collapsed: false, items: [
+                { text: '使用 lens 登录到远程 kubernetes 集群 ', link: '/devops/management/lens' },
+                { text: 'kubectl 通过 命令行登录 ', link: '/devops/management/kubectl' },
+                { text: 'kubernetes新增远程公网访问server配置 ', link: '/devops/management/remote' },
+            ]
         }
     ]
 }
