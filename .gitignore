@@ -1,17 +1,5 @@
-# Object file
-*.o
-
-# Ada Library Information
-*.ali
+.next
 node_modules
-.temp
-.cache
 
-
-dist
-
-
-.idea
 
 yarn.lock
-cache
