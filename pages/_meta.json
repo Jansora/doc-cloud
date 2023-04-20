@@ -6,6 +6,10 @@
     "theme": {
     }
   },
+  "cloud-platform": {
+    "title": "Cloud Platform",
+    "type": "page"
+  },
   "contact": {
     "title": "Contact ↗",
     "type": "page",
