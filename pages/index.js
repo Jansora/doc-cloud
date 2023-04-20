@@ -36,36 +36,36 @@ export default function Home() {
 
           <div className={styles.grid}>
 
-            <Link href={"/cloud-platform/cloud"}  className={styles.card}>
+            <Link href={"/cloud-platform/cloudflare/inet-mapping"}  className={styles.card}>
               <h3 className={inter.className}>
-                项目管理 <span>-&gt;</span>
+                Cloud Platform <span>-&gt;</span>
               </h3>
               <p className={inter.className}>
                 Find in-depth information about Next.js features and&nbsp;API..
               </p>
             </Link>
 
-            <Link href={"/development/qa/api-doc"}  className={styles.card}>
+            <Link href={"/"}  className={styles.card}>
               <h3 className={inter.className}>
-                研发环境 <span>-&gt;</span>
+                Cloud Native <span>-&gt;</span>
               </h3>
               <p className={inter.className}>
                 Find in-depth information about Next.js features and&nbsp;API.
               </p>
             </Link>
 
-            <Link href={"/linked/development/system"}  className={styles.card}>
+            <Link href={"/"}  className={styles.card}>
               <h3 className={inter.className}>
-                资源索引 <span>-&gt;</span>
+                Cloud Devops <span>-&gt;</span>
               </h3>
               <p className={inter.className}>
                 Find in-depth information about Next.js features and&nbsp;API.
               </p>
             </Link>
 
-            <Link href={"/new-comers/first-day"}  className={styles.card}>
+            <Link href={"/"}  className={styles.card}>
               <h3 className={inter.className}>
-                新人必读 <span>-&gt;</span>
+                Cloud Serverless <span>-&gt;</span>
               </h3>
               <p className={inter.className}>
                 Find in-depth information about Next.js features and&nbsp;API.
