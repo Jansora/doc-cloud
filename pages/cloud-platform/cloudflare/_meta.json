@@ -1,3 +1,4 @@
 {
-  "inet-mapping": "Cloudflare 怎么做内网穿透"
+  "inet-mapping": "Cloudflare 怎么做内网穿透",
+  "ssl": "申请 SSL 证书 (Cloudflare + acme.sh)"
 }
