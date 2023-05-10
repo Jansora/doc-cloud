@@ -47,6 +47,15 @@ export default function Home() {
 
             <Link href={"/"}  className={styles.card}>
               <h3 className={inter.className}>
+                Cloud Private <span>-&gt;</span>
+              </h3>
+              <p className={inter.className}>
+                Find in-depth information about Next.js features and&nbsp;API.
+              </p>
+            </Link>
+
+            <Link href={"/"}  className={styles.card}>
+              <h3 className={inter.className}>
                 Cloud Native <span>-&gt;</span>
               </h3>
               <p className={inter.className}>
@@ -54,18 +63,10 @@ export default function Home() {
               </p>
             </Link>
 
-            <Link href={"/"}  className={styles.card}>
-              <h3 className={inter.className}>
-                Cloud Devops <span>-&gt;</span>
-              </h3>
-              <p className={inter.className}>
-                Find in-depth information about Next.js features and&nbsp;API.
-              </p>
-            </Link>
 
             <Link href={"/"}  className={styles.card}>
               <h3 className={inter.className}>
-                Cloud Serverless <span>-&gt;</span>
+                Cloud Devops <span>-&gt;</span>
               </h3>
               <p className={inter.className}>
                 Find in-depth information about Next.js features and&nbsp;API.

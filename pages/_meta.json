@@ -10,6 +10,14 @@
     "title": "Cloud Platform",
     "type": "page"
   },
+  "cloud-private": {
+    "title": "Cloud Private",
+    "type": "page"
+  },
+  "cloud-native": {
+    "title": "Cloud Native \uD83D\uDD25",
+    "type": "page"
+  },
   "contact": {
     "title": "Contact ↗",
     "type": "page",
