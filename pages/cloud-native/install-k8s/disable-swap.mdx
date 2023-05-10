@@ -1,0 +1,13 @@
+# 禁用交换分区
+> U1 / U2 / U3 节点均要执行
+
+编辑 `/etc/fstab`
+
+禁用 swap 分区
+
+在 /swap.img 一行前面加 #
+```
+# /swap.img     none    swap    sw      0       0
+```
+
+重启
