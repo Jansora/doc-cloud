@@ -1,5 +1,9 @@
-## 安装 / 配置 NFS 服务器
-> 有参考 `ChatGPT` 的回答
+
+> 1. 在 U1 上安装 NFS 服务器
+> 2. 在 U2 / U3 上挂载 NFS 共享目录
+
+## [U1] 安装 / 配置 NFS 服务器
+
 
 import { Tab, Tabs } from 'nextra-theme-docs';
 
@@ -109,7 +113,7 @@ root@u1:~# sudo cat /proc/fs/nfsd/versions
 -2 +3 +4 +4.1 +4.2
 ```
 
-## 配置共享目录
+## [U1] NFS 配置共享目录
 
 创建共享目录 `/nfs`
 
@@ -117,9 +121,6 @@ root@u1:~# sudo cat /proc/fs/nfsd/versions
 mkdir -p /nfs
 chmod 777 /nfs
 ```
-
-## NFS 配置
-
 
 打开`/etc/exports`文件，输入以下内容来定义NFS共享。
 
@@ -134,7 +135,7 @@ sudo exportfs -a
 ```
 
 
-## 启动NFS服务器
+## [U1] 启动NFS服务器
 
 在终端中输入以下命令以启动NFS服务。
 
@@ -143,7 +144,7 @@ sudo systemctl start nfs-kernel-server
 ```
 
 
-## 验证安装结果
+## [U2] 验证安装结果
 在 `U2` 节点上验证
 
 1. 安装依赖
@@ -181,15 +182,24 @@ hello, nfs!
 
 验证成功!!
 
-## 配置开机启动挂载 NFS
+## [U2, U3] 挂载 NFS 并配置开机启动
 
-1. 您需要编辑`/etc/fstab` 文件并添加一行类似于以下内容的条目：
+在 `U2 / U3 ` 上分别挂载
+
+1. 安装依赖
+
+```
+sudo apt install nfs-common
+```
+
+
+2. 您需要编辑`/etc/fstab` 文件并添加一行类似于以下内容的条目：
 
 ```
 192.168.88.11:/nfs /mnt/nfs nfs default 0 0
 ```
 
-2. 重启 `U2`
+3. 重启 `U2 / U3` 并进行验证
 
 ```
 Last login: Wed May 10 15:32:10 2023 from 192.168.88.1
@@ -211,10 +221,5 @@ hello, nfs!
 root@u2:/mnt/nfs#
 ```
 
-验证成功
 
-
-## 在其他节点上同样方式挂载
-
-在节点 `U3` 上挂载
 
