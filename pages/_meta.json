@@ -7,15 +7,15 @@
     }
   },
   "cloud-platform": {
-    "title": "Cloud Platform",
+    "title": "Cloud Platform(公有云)",
     "type": "page"
   },
   "cloud-private": {
-    "title": "Cloud Private",
+    "title": "Cloud Private(私有云)",
     "type": "page"
   },
   "cloud-native": {
-    "title": "Cloud Native \uD83D\uDD25",
+    "title": "Cloud Native(云原生) \uD83D\uDD25",
     "type": "page"
   },
   "contact": {

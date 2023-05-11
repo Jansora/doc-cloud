@@ -2,51 +2,62 @@
 
 `acme.sh` 是一个用于从 Let's Encrypt（一种免费、开放和自动化的证书颁发机构）获取 SSL 证书的 shell 脚本。要为使用 Cloudflare 作为 DNS 提供商的域名注册 SSL 证书，您可以按照以下步骤操作：
 
-1.  首先，确保您已安装并正确配置了 `acme.sh`。如果还没有安装，可以使用以下命令安装：
+## 1. 安装 acme.sh
+
+首先，确保您已安装并正确配置了 `acme.sh`。如果还没有安装，可以使用以下命令安装：
 
 ```
 curl https://get.acme.sh | sh
 ```
 
-2.  登录到您的 Cloudflare 账户，导航到 "API Tokens" 页面（在 "Profile" 页面下找到），并创建一个新的 API Token，确保具有 `Zone.Zone` 和 `Zone.DNS` 的编辑权限。
+重启终端 或 重新打开一个终端
+
+
+
+注册账户
+
+```
+acme.sh --register-account -m zhangyue1936@gmail.com
+```
+
+## 2. 配置 Cloudflare
+
+2.1.  登录到您的 Cloudflare 账户，导航到 "API Tokens" 页面（在 "Profile" 页面下找到），并创建一个新的 API Token，确保具有 `Zone.Zone` 和 `Zone.DNS` 的编辑权限。
 
 ![U1wkmz](https://storage.qiniu.jansora.com/files/uPic/2023/04/26/U1wkmz.png)
 
-3.  将 Cloudflare API Token 和帐户邮箱导出为环境变量：
-
-
-shCopy code
+![0txibU](https://storage.qiniu.jansora.com/files/uPic/2023/05/11/0txibU.png)
 
 ```
-export CF_Token="your_cloudflare_api_token"
-export CF_Email="your_cloudflare_account_email"
+export CF_Token="xxx"
 ```
 
-请将 `your_cloudflare_api_token` 和 `your_cloudflare_account_email` 替换为您实际的 API Token 和帐户邮箱。
+2.2. 配置 `CF_Zone_ID` 和 `CF_Account_ID`
 
-4.  使用 `acme.sh` 为您的域名颁发 SSL 证书：
+> 在域名的 Dashboard -> Overview 页面
 
-shCopy code
+![Y03Vn5](https://storage.qiniu.jansora.com/files/uPic/2023/05/11/Y03Vn5.png)
 
 ```
-acme.sh --issue --dns dns_cf -d example.com -d "*.example.com"
+export CF_Account_ID="xxx"
+export CF_Zone_ID="xxx"
 ```
 
-请将 `example.com` 替换为您的实际域名。这个命令将同时为您的根域名和通配符子域名颁发证书。
+## 3. 生成证书
 
-5.  如果证书颁发成功，您将看到证书文件的路径。默认情况下，证书（`fullchain.cer`）和私钥（`example.com.key`）将存储在 `~/.acme.sh/example.com/` 目录中。您可以将这些文件部署到您的服务器上，以便在 Web 服务器上配置 SSL。
+使用 `acme.sh` 为您的域名颁发 SSL 证书：
 
-6.  最后，为了确保 SSL 证书在到期前自动更新，请设置一个 cron 任务。`acme.sh` 安装过程中通常会自动完成这一步，您可以通过运行 `crontab -l` 查看是否已存在 `acme.sh` 的自动更新任务。
+```
+/root/.acme.sh/acme.sh --issue --force --dns dns_cf -d 'jansora.app' -d '*.jansora.app' -d '*.localhost.jansora.app' -d '*.asiainfo.jansora.app'
+```
 
+如果证书颁发成功，您将看到证书文件的路径。
+
+```
+[Thu May 11 03:00:52 AM UTC 2023] Your cert is in: /root/.acme.sh/jansora.app_ecc/jansora.app.cer
+[Thu May 11 03:00:52 AM UTC 2023] Your cert key is in: /root/.acme.sh/jansora.app_ecc/jansora.app.key
+[Thu May 11 03:00:52 AM UTC 2023] The intermediate CA cert is in: /root/.acme.sh/jansora.app_ecc/ca.cer
+[Thu May 11 03:00:52 AM UTC 2023] And the full chain certs is there: /root/.acme.sh/jansora.app_ecc/fullchain.cer
+```
 
 以上步骤将帮助您为使用 Cloudflare DNS 提供商的域名使用 `acme.sh` 注册 SSL 证书。如有任何问题，请查阅 `acme.sh` 文档以获取更多信息和示例。
-
-Was this response better or worse?
-
-BetterWorseSame
-
-
-
-ChatGPT may produce inaccurate information about people, places, or facts. [ChatGPT Mar 23 Version](https://help.openai.com/en/articles/6825453-chatgpt-release-notes)
-
-![3s5ie9](https://storage.qiniu.jansora.com/files/uPic/2023/04/26/3s5ie9.png)
