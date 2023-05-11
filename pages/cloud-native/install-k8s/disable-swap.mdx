@@ -1,6 +1,9 @@
 # 3. 禁用交换分区
-> U1 / U2 / U3 节点均要执行
+import { Callout } from 'nextra-theme-docs'
 
+<Callout type="warning" emoji="⚠️">
+    U1, U2, U3 节点均要执行
+</Callout>
 ## 禁用 swap 分区
 编辑 `/etc/fstab`, 在 `/swap.img` 一行前面加 `#` 或者删除此行
 ```

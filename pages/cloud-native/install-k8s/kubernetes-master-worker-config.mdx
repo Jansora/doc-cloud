@@ -1,0 +1,205 @@
+# 6. K8S 主从配置
+
+import { Callout } from 'nextra-theme-docs'
+
+<Callout type="warning" emoji="⚠️">
+    U1, U2, U3 节点安装请参照具体步骤
+</Callout>
+
+
+# 使用 kubeadm 安装 Kubernetes 集群
+
+在做好了准备工作之后，下面介绍如何使用 kubeadm 安装 Kubernetes 集群，我们将首先安装 master 节点，然后将 slave 节点一个个加入到集群中去。
+
+网络插件使用 flannel，在初始化时加上网络配置参数，设置 kubernetes 的子网为 10.244.0.0/16，注意此处不要修改为其他地址，因为这个值与后续的 flannel 的 yaml 值要一致，如果修改，请一并修改。
+
+这个下载镜像的过程涉及翻墙，因为会从 gcr 的站点下载容器镜像。。。（如果大家翻墙不方便的话，可以用我在上文准备工作中提到的导出的镜像）。
+
+> 因在中国大陆, 因此临时采用 aliyun mirror
+
+
+**U1 (MASTER) 执行** 如下命令
+
+> 注意以下命令中的 `192.168.88.11` 为 U1 的 IP 地址
+```
+kubeadm init --kubernetes-version 1.19.16 \
+--pod-network-cidr=10.244.0.0/16 \
+--apiserver-advertise-address=192.168.88.11 \
+--image-repository registry.cn-hangzhou.aliyuncs.com/google_containers
+```
+
+
+
+import { Tab, Tabs } from 'nextra-theme-docs';
+
+在主节点 `U1` 上安装 `nfs-server`
+
+<Tabs items={["安装命令", "安装日志"]}>
+    <Tab>
+```
+kubeadm init --kubernetes-version 1.19.16 \
+--pod-network-cidr=10.244.0.0/16 \
+--apiserver-advertise-address=192.168.88.11 \
+--image-repository registry.cn-hangzhou.aliyuncs.com/google_containers
+```
+    </Tab>
+<Tab>
+</Tab>
+    
+</Tabs>
+MASTER 节点执行 如下命令来配置 kubectl。
+```
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+这样 master 的节点就配置好.
+注意以下日志, **slave** 节点添加进来的时候需要
+```
+
+Then you can join any number of worker nodes by running the following on each as root:
+
+kubeadm join 10.0.4.10:6443 --token 0mynwm.10bk3hdn34e9lgo \
+    --discovery-token-ca-cert-hash sha256:51a66dd07069658f42d33923ecee7059a3b35820128a3d5acfaa7d374a9b8494
+```
+# 绑定 master 主机本地环境变量
+MASTER 节点执行
+```
+echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> /etc/profile
+```
+# 配置 网络插件 flannel
+MASTER 节点执行
+`kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml`
+
+```
+root@l2:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+podsecuritypolicy.policy/psp.flannel.unprivileged created
+clusterrole.rbac.authorization.k8s.io/flannel created
+clusterrolebinding.rbac.authorization.k8s.io/flannel created
+serviceaccount/flannel created
+configmap/kube-flannel-cfg created
+daemonset.apps/kube-flannel-ds created
+root@l2:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
+clusterrole.rbac.authorization.k8s.io/flannel configured
+clusterrolebinding.rbac.authorization.k8s.io/flannel unchanged
+```
+# 等到状态变为正常
+```
+root@l2:~# kubectl get pods -n kube-system
+NAME                         READY   STATUS    RESTARTS   AGE
+coredns-6c76c8bb89-h825c     1/1     Running   0          5m1s
+coredns-6c76c8bb89-zlzjg     1/1     Running   0          5m1s
+etcd-l2                      1/1     Running   0          5m12s
+kube-apiserver-l2            1/1     Running   0          5m12s
+kube-controller-manager-l2   1/1     Running   0          5m12s
+kube-flannel-ds-qnpl5        1/1     Running   0          4m26s
+kube-proxy-d7ffb             1/1     Running   0          5m1s
+kube-scheduler-l2            1/1     Running   0          5m12s
+```
+# 将 slave 节点加入到集群
+具体命令取决于主节点创建时打印的日志
+
+WORKER 节点分别执行
+`kubeadm join 10.0.4.10:6443 --token 0mynwm.10bk3hdn34e9lgo \ --discovery-token-ca-cert-hash sha256:51a66dd07069658f42d33923ecee7059a3b35820128a3d5acfaa7d374a9b8494`
+
+部分日志如下
+```
+[preflight] Running pre-flight checks
+        [WARNING IsDockerSystemdCheck]: detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
+[preflight] Reading configuration from the cluster...
+[preflight] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
+[kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
+[kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
+[kubelet-start] Starting the kubelet
+[kubelet-start] Waiting for the kubelet to perform the TLS Bootstrap...
+
+This node has joined the cluster:
+* Certificate signing request was sent to apiserver and a response was received.
+* The Kubelet was informed of the new secure connection details.
+
+Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
+```
+# 主节点检测是否成功
+MASTER 节点执行
+```
+root@l2:~# kubectl get nodes
+NAME   STATUS   ROLES    AGE     VERSION
+l2     Ready    master   22m     v1.19.16
+l3     Ready    <none>   5m7s    v1.19.16
+l4     Ready    <none>   4m56s   v1.19.16
+```
+
+# 附录. FAQ
+## Q: kube-flannel STATUS CrashLoopBackOff ?
+
+```
+root@l2:~# kubectl get pods -n kube-system
+NAME                         READY   STATUS             RESTARTS   AGE
+coredns-6c76c8bb89-d5kvk     1/1     Running            0          2m27s
+coredns-6c76c8bb89-zfws2     1/1     Running            0          2m27s
+etcd-l2                      1/1     Running            0          2m28s
+kube-apiserver-l2            1/1     Running            0          2m28s
+kube-controller-manager-l2   1/1     Running            0          2m28s
+kube-flannel-ds-hftwx        0/1     CrashLoopBackOff   4          2m27s
+kube-proxy-xj5c4             1/1     Running            0          2m27s
+kube-scheduler-l2            1/1     Running            0          2m28s
+```
+
+A: For flannel to work correctly, you must pass --pod-network-cidr=10.244.0.0/16 to kubeadm init.
+
+> [https://stackoverflow.com/questions/52098214/kube-flannel-in-crashloopbackoff-status](https://stackoverflow.com/questions/52098214/kube-flannel-in-crashloopbackoff-status)
+
+
+## Q: coredns状态卡在ContainerCreating
+
+```
+root@l2:~# kubectl get pods -n kube-system
+NAME                         READY   STATUS              RESTARTS   AGE
+coredns-6c76c8bb89-hwklk     0/1     ContainerCreating   0          43s
+coredns-6c76c8bb89-xxc6l     0/1     ContainerCreating   0          43s
+etcd-l2                      0/1     Running             0          42s
+kube-apiserver-l2            1/1     Running             0          42s
+kube-controller-manager-l2   0/1     Running             0          42s
+kube-flannel-ds-7nscs        1/1     Running             2          21s
+kube-proxy-6zhks             1/1     Running             0          43s
+kube-scheduler-l2            0/1     Running             0          42s
+```
+
+A:
+【解决方法】
+步骤一：在所有节点（master和slave节点）删除cni0，以及暂停k8s和docker。
+
+```
+
+kubeadm reset
+
+systemctl stop kubelet
+
+systemctl stop docker
+
+rm -rf /var/lib/cni/
+
+rm -rf /var/lib/kubelet/
+
+rm -rf /etc/cni/
+
+ifconfig cni0 down
+
+ifconfig flannel.1 down
+
+ifconfig docker0 down
+
+ip link delete cni0
+
+ip link delete flannel.1
+```
+
+步骤二：在所有节点重启kubelet和docker
+
+```
+systemctl start kubelet
+
+systemctl start docker
+```
+
+步骤三：重新执行kubeadm init的操作
