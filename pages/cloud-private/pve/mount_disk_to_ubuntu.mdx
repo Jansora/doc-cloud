@@ -1,0 +1,103 @@
+# 为运行中的 Ubuntu 挂载数据盘
+
+1. 添加磁盘
+
+> 截图有误, 实际为 200G
+![KsY5gL](https://storage.qiniu.jansora.com/files/uPic/2023/05/11/KsY5gL.png)
+
+
+![8Q0zHY](https://storage.qiniu.jansora.com/files/uPic/2023/05/11/8Q0zHY.png)
+
+2. 检测磁盘挂载成功
+
+```
+fdisk -l
+```
+
+找到目的磁盘 `/dev/vdb`
+```
+Disk /dev/vdb: 200 GiB, 214748364800 bytes, 419430400 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+```
+
+3. 格式化磁盘
+
+```
+mkfs.ext4 /dev/vdb
+```
+
+4. 添加挂载点挂载磁盘
+
+```
+mkdir -p /mnt/vdb
+mount /dev/vdb /mnt/vdb
+```
+
+5. 检查磁盘
+
+```
+root@u1:/# df -h
+Filesystem      Size  Used Avail Use% Mounted on
+tmpfs           393M  1.1M  392M   1% /run
+/dev/sda3        47G  7.3G   38G  17% /
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           5.0M     0  5.0M   0% /run/lock
+/dev/sda2       2.0G  134M  1.7G   8% /boot
+tmpfs           393M  4.0K  393M   1% /run/user/0
+/dev/vdb        196G   28K  186G   1% /mnt/vdb
+```
+
+6. 验证磁盘
+
+```
+root@u1:/# cd /mnt/vdb
+root@u1:/mnt/vdb# ls -l
+total 16
+drwx------ 2 root root 16384 May 11 09:22 lost+found
+root@u1:/mnt/vdb# echo 'hello' > a.txt
+root@u1:/mnt/vdb# ls -l
+total 20
+-rw-r--r-- 1 root root     6 May 11 09:25 a.txt
+drwx------ 2 root root 16384 May 11 09:22 lost+found
+root@u1:/mnt/vdb# cat a.txt
+hello
+```
+
+7. 开机自动挂载
+
+编辑 `/etc/fstab`
+
+import { Callout } from 'nextra-theme-docs'
+
+<Callout type="warning" emoji="⚠️">
+    注意 VirtIO 磁盘和 SCSI 磁盘挂载到 /etc/fstab 方式不一样
+</Callout>
+
+> 注意
+```
+/dev/vdb /mnt/vdb ext4 defaults 0 2
+```
+
+
+8. 重启验证
+
+```
+reboot
+```
+
+重启后检查挂载
+```
+df -h
+
+root@u2:~# df -h
+Filesystem          Size  Used Avail Use% Mounted on
+tmpfs               393M  1.1M  392M   1% /run
+/dev/sda3            47G  7.3G   38G  17% /
+tmpfs               2.0G     0  2.0G   0% /dev/shm
+tmpfs               5.0M     0  5.0M   0% /run/lock
+/dev/sda2           2.0G  134M  1.7G   8% /boot
+192.168.88.88:/nfs  196G     0  186G   0% /mnt/nfs
+tmpfs               393M  4.0K  393M   1% /run/user/0
+```

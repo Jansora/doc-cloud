@@ -1,0 +1,8 @@
+{
+  "explain": "1. 安装准备",
+  "install-nfs": "2. 安装 NFS 共享存储",
+  "disable-swap": "3. 禁用交换分区",
+  "install-docker": "4. 安装 Docker (19.03.15)",
+  "install-kubernetes": "5. 安装 K8S (1.19.16)"
+
+}

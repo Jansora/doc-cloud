@@ -1,0 +1,34 @@
+# 5. 安装 kubernetes (1.19.16)
+
+> U1, U2, U3 节点均要安装
+
+
+在 `/etc/apt/sources.list` 结尾 加入阿里云镜像源
+
+```
+......
+
+## kubeadm及kubernetes组件安装源
+deb https://mirrors.aliyun.com/kubernetes/apt kubernetes-xenial main
+```
+
+
+
+安装 k8s 密钥
+```
+curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg |sudo apt-key add -
+```
+更新软件包
+```
+apt update
+```
+
+## 安装 kubeadm，kubectl，kubelet 1.19.16
+
+安装 kubeadm，kubectl，kubelet 软件包 1.19.16 版本。
+
+```
+apt install kubeadm=1.19.16-00 kubelet=1.19.16-00 kubectl=1.19.16-00
+```
+
+
