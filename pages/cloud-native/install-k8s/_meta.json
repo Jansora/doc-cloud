@@ -7,5 +7,7 @@
   "kubernetes-master-worker-config": "6. K8S 主从配置",
   "helm": "7. 安装 helm",
   "kubernetes-pv-config": "8. 动态 PV 配置",
-  "kubernetes-dashboard": "9. 部署 Dashboard"
+  "kubernetes-dashboard": "9. 部署 Dashboard",
+  "nginx-ingress-controller": "10. 部署 Nginx Ingress ",
+  "validate-k8s": "11. 验证 kubernetes 集群"
 }

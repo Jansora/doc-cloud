@@ -1,0 +1,138 @@
+# 11. 验证 kubernetes 集群
+从 Java Pod -> Service -> Ingress -> Nginx -> Browser 全流程验证
+1. Java Pod: 负载
+2. Service: 为 Pod 负载均衡
+3. Ingress: 域名化处理 Service, 便于管理, 且节省集群 NodePort 资源
+4. Nginx: 服务器端总出口 (也可不用)
+5. Browser: 浏览器端访问
+
+## 测试开源项目
+
+https://github.com/Jansora/OnlineCompiler
+
+##  创建 Deployment
+
+`kubectl apply -f https://storage.qiniu.jansora.com/files/uPic/2023/05/12/onlinecompiler-deployment.yaml`
+```yaml filename="onlinecompiler-deployment.yaml"
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: onlinecompiler
+
+spec:
+  selector:
+    matchLabels:
+      app: onlinecompiler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 20
+      maxUnavailable: 20
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: onlinecompiler
+    spec:
+      containers:
+        - name: onlinecompiler
+          image: ccr.ccs.tencentyun.com/jansora/onlinecompiler:7.3
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: nfs-pvc
+              subPath: 'onlinecompiler'
+              mountPath: "/app/data"
+      volumes:
+        - name: nfs-pvc
+          persistentVolumeClaim:
+            claimName: nfs-pvc
+
+```
+## 创建 Service
+
+`kubectl apply -f https://storage.qiniu.jansora.com/files/uPic/2023/05/12/onlinecompiler-service.yaml`
+
+```yaml filename="onlinecompiler-service.yaml"
+apiVersion: v1
+kind: Service
+metadata:
+  name: onlinecompiler-service
+spec:
+  type: ClusterIP
+  selector:
+    app: onlinecompiler
+#    app.kubernetes.io/name: hole-pre
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+      name: http
+```
+## 创建 Ingress Controller
+
+`kubectl apply -f https://storage.qiniu.jansora.com/files/uPic/2023/05/12/github-ingress.yaml`
+
+```yaml filename="onlinecompiler-service.yaml"
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: github-ingress
+#  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: github-onlinecompiler.kubernetes.jansora.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: onlinecompiler-service
+                port:
+                  number: 8080
+            pathType: Prefix
+            path: /
+```
+
+部署成功之后服务会暴露在 U1 (`192.168.88.11`) 的 `30080` 端口. 需要通过主机名 `github-onlinecompiler.kubernetes.jansora.com` 才能访问
+
+# 外部 Web nginx 配置验证
+
+nginx 下配置
+
+>  这个配置很重要
+>  proxy_set_header Host github-onlinecompiler.kubernetes.jansora.com;
+
+
+```yaml
+server {
+
+    listen 80;
+    server_name onlinecompiler.localhost;
+
+    location / {
+        proxy_pass_header Server;
+        proxy_set_header Host github-onlinecompiler.kubernetes.jansora.com;
+        proxy_redirect off;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Scheme $scheme;
+        proxy_pass http://192.168.88.11:30080/;
+    }
+}
+```
+
+> 访问下属链接 onlinecompiler.localhost 验证
+```
+1. 通过 curl
+curl onlinecompiler.localhost
+2. 通过浏览器
+
+```
+## online demo
+
+访问下属链接 [http://onlinecompiler.github.jansora.com/](http://onlinecompiler.github.jansora.com/)
+
+
+
