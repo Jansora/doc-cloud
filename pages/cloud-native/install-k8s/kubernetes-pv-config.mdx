@@ -1,0 +1,141 @@
+# 8. 动态PV配置
+
+import {Callout} from "nextra-theme-docs";
+
+<Callout type="warning" emoji="⚠️">
+    U1 节点安装
+</Callout>
+
+
+## 新建 kubernetes 目录
+
+```
+cd /mnt/nfs
+mkdir -p kubernetes
+
+```
+## Helm 部署 PV
+
+调整 `nfs.server` 和 `nfs.path` 配置
+
+> 默认的 `StorageClass` 名称是 `nfs-client`
+
+```
+ helm install -n kube-system nfs-client nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+    --set nfs.server=192.168.88.88 \
+    --set nfs.path=/nfs/kubernetes \
+    --set storageClass.defaultClass=true
+
+```
+## 检测部署状态为 running
+
+U1 节点执行
+
+```
+kubectl get pods -n kube-system | grep nfs-client
+
+root@u1:/mnt# kubectl get pods -n kube-system | grep nfs-client
+nfs-client-nfs-subdir-external-provisioner-6f9ccc6df5-z2sml   1/1     Running   0          7m7s
+```
+
+##  创建通用 PVC 和测试 PVC
+
+创建通用 100G 的 PVC
+
+U1 节点执行
+```
+kubectl apply -f https://storage.qiniu.jansora.com/files/uPic/2023/05/12/nfs-pvc.yaml
+```
+
+```yaml filename="nfs-pvc.yaml"
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: nfs-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+```
+
+创建测试 1M 的 PVC
+
+U1 节点执行
+
+```
+kubectl apply -f https://storage.qiniu.jansora.com/files/uPic/2023/05/12/test-pvc.yaml
+```
+
+```yaml filename="test-pvc.yaml"
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: test-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Mi
+```
+##  测试 PVC 的有效性
+
+创建一个测试 Pod 指定上述的测试 PVC .
+
+此 Pod 会在挂载的 NFS 目录下创建一个 SUCCESS 的文件
+
+U1 节点执行
+
+```
+kubectl apply -f https://storage.qiniu.jansora.com/files/uPic/2023/05/12/test-pod.yaml
+```
+```yaml filename="test-pod.yaml"
+kind: Pod
+apiVersion: v1
+metadata:
+  name: test-pod
+spec:
+  containers:
+    - name: test-pod
+      image: busybox:latest
+      command:
+        - "/bin/sh"
+      args:
+        - "-c"
+        - "touch /mnt/SUCCESS && exit 0 || exit 1"  #创建一个名称为"SUCCESS"的文件
+      volumeMounts:
+        - name: nfs-pvc
+          mountPath: "/mnt"
+  restartPolicy: "Never"
+  volumes:
+    - name: nfs-pvc
+      persistentVolumeClaim:
+        claimName: test-pvc
+```
+
+检查 nfs 共享存储中是否存在该文件
+
+U1 节点执行
+
+```yaml
+root@u1:~# cd /mnt/nfs
+root@u1:/mnt/nfs# ls -l
+total 24
+-rw-r--r-- 1 root   root       13 May 11 14:22 a.txt
+drwxrwxrwx 3 nobody nogroup  4096 May 12 06:36 kubernetes
+drwx------ 2 root   root    16384 May 11 14:20 lost+found
+root@u1:/mnt/nfs# cd kubernetes/
+root@u1:/mnt/nfs/kubernetes# ls -l
+total 8
+drwxrwxrwx 2 nobody nogroup 4096 May 12 06:36 default-nfs-pvc-pvc-3597cad2-005b-4da2-b6bc-f69f9ccdb8c1
+drwxrwxrwx 2 nobody nogroup 4096 May 12 07:11 default-test-pvc-pvc-4214a4a0-cc2a-41df-9251-9e08ed536e8b
+root@u1:/mnt/nfs/kubernetes# cd default-test-pvc-pvc-4214a4a0-cc2a-41df-9251-9e08ed536e8b/
+root@u1:/mnt/nfs/kubernetes/default-test-pvc-pvc-4214a4a0-cc2a-41df-9251-9e08ed536e8b# ls -l
+total 0
+-rw-r--r-- 1 nobody nogroup 0 May 12 07:11 SUCCESS
+```
+
+测试通过!!!
+

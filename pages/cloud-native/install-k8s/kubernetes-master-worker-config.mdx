@@ -7,7 +7,7 @@ import { Callout } from 'nextra-theme-docs'
 </Callout>
 
 
-# 使用 kubeadm 安装 Kubernetes 集群
+## kubeadm 安装 Kubernetes 集群
 
 在做好了准备工作之后，下面介绍如何使用 kubeadm 安装 Kubernetes 集群，我们将首先安装 master 节点，然后将 slave 节点一个个加入到集群中去。
 
@@ -116,9 +116,9 @@ kubeadm init --kubernetes-version 1.19.16 \
 
     Then you can join any number of worker nodes by running the following on each as root:
 
-    kubeadm join 192.168.88.11:6443 --token yqutyd.nlrmqhnqoi0wkjxn \
-    --discovery-token-ca-cert-hash sha256:e84c7c70ee156367d97bdaa6fe39c658d44efaaaddd2cef115400f70a9e1101d
-```
+    kubeadm join 192.168.88.11:6443 --token 8bfaen.baxw6mn7xgr6rp2f \
+    --discovery-token-ca-cert-hash sha256:34b9f2783d89313c38b0e7503f8a941d992618d54f50b4c51aaf57236cde31db
+    ```
 </Tab>
 </Tabs>
 MASTER 节点执行 如下命令来配置 kubectl。
@@ -136,17 +136,19 @@ Then you can join any number of worker nodes by running the following on each as
 kubeadm join 192.168.88.11:6443 --token 0mynwm.10bk3hdn34e9lgo \
     --discovery-token-ca-cert-hash sha256:51a66dd07069658f42d33923ecee7059a3b35820128a3d5acfaa7d374a9b8494
 ```
-# 绑定 master 主机本地环境变量
-MASTER 节点执行
+## 绑定 master 主机本地环境变量
+> U1 (MASTER) 节点执行
 ```
 echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> /etc/profile
 ```
-# 配置 网络插件 flannel
-MASTER 节点执行
+## 配置 网络插件 flannel
+
+> U1 (MASTER) 节点执行
+
 `kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml`
 
 ```
-root@l2:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+root@u1:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 podsecuritypolicy.policy/psp.flannel.unprivileged created
 clusterrole.rbac.authorization.k8s.io/flannel created
 clusterrolebinding.rbac.authorization.k8s.io/flannel created
@@ -157,24 +159,26 @@ root@l2:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/mas
 clusterrole.rbac.authorization.k8s.io/flannel configured
 clusterrolebinding.rbac.authorization.k8s.io/flannel unchanged
 ```
-# 等到状态变为正常
+## 等到状态变为正常
 ```
-root@l2:~# kubectl get pods -n kube-system
+root@u1:~# kubectl get pods -n kube-system
 NAME                         READY   STATUS    RESTARTS   AGE
-coredns-6c76c8bb89-h825c     1/1     Running   0          5m1s
-coredns-6c76c8bb89-zlzjg     1/1     Running   0          5m1s
-etcd-l2                      1/1     Running   0          5m12s
-kube-apiserver-l2            1/1     Running   0          5m12s
-kube-controller-manager-l2   1/1     Running   0          5m12s
-kube-flannel-ds-qnpl5        1/1     Running   0          4m26s
-kube-proxy-d7ffb             1/1     Running   0          5m1s
-kube-scheduler-l2            1/1     Running   0          5m12s
+coredns-6c76c8bb89-n7pwh     1/1     Running   0          6m29s
+coredns-6c76c8bb89-tkgb9     1/1     Running   0          6m29s
+etcd-u1                      1/1     Running   0          6m39s
+kube-apiserver-u1            1/1     Running   0          6m39s
+kube-controller-manager-u1   1/1     Running   0          6m39s
+kube-proxy-2xzm6             1/1     Running   0          4m19s
+kube-proxy-44lzm             1/1     Running   0          6m29s
+kube-proxy-nr74n             1/1     Running   0          4m2s
+kube-scheduler-u1            1/1     Running   0          6m39s
 ```
-# 将 slave 节点加入到集群
-具体命令取决于主节点创建时打印的日志
+## 将 slave 节点加入到集群
 
-WORKER 节点分别执行
-`kubeadm join 10.0.4.10:6443 --token 0mynwm.10bk3hdn34e9lgo \ --discovery-token-ca-cert-hash sha256:51a66dd07069658f42d33923ecee7059a3b35820128a3d5acfaa7d374a9b8494`
+具体命令取决于主节点创建时打印的日志
+> U2 / U3 (WORKER) 节点执行
+
+`kubeadm join 192.168.88.11:6443 --token 0mynwm.10bk3hdn34e9lgo \ --discovery-token-ca-cert-hash sha256:51a66dd07069658f42d33923ecee7059a3b35820128a3d5acfaa7d374a9b8494`
 
 部分日志如下
 ```
@@ -193,7 +197,7 @@ This node has joined the cluster:
 
 Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
 ```
-# 主节点检测是否成功
+## 主节点检测是否成功
 MASTER 节点执行
 ```
 root@l2:~# kubectl get nodes
@@ -203,8 +207,8 @@ l3     Ready    <none>   5m7s    v1.19.16
 l4     Ready    <none>   4m56s   v1.19.16
 ```
 
-# 附录. FAQ
-## Q: kube-flannel STATUS CrashLoopBackOff ?
+## 附录. FAQ
+### Q: kube-flannel STATUS CrashLoopBackOff ?
 
 ```
 root@l2:~# kubectl get pods -n kube-system
@@ -224,7 +228,7 @@ A: For flannel to work correctly, you must pass --pod-network-cidr=10.244.0.0/16
 > [https://stackoverflow.com/questions/52098214/kube-flannel-in-crashloopbackoff-status](https://stackoverflow.com/questions/52098214/kube-flannel-in-crashloopbackoff-status)
 
 
-## Q: coredns状态卡在ContainerCreating
+### Q: coredns状态卡在ContainerCreating
 
 ```
 root@l2:~# kubectl get pods -n kube-system
@@ -281,7 +285,7 @@ systemctl start docker
 
 
 
-## Q: 报错docker: Error response from daemon: cgroups: cgroup mountpoint does not exist: unknown. ?
+### Q: 报错docker: Error response from daemon: cgroups: cgroup mountpoint does not exist: unknown. ?
 
 > U1 / U2 / U3 都要执行
 
@@ -297,7 +301,7 @@ mount -t cgroup -o none,name=systemd cgroup /sys/fs/cgroup/systemd
 source /etc/profile
 ```
 
-## Q: 安装出错, 重置 kubernetes ?
+### Q: 安装出错, 重置 kubernetes ?
 
 ```
 sudo kubeadm reset

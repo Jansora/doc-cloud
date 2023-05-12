@@ -1,0 +1,54 @@
+# 7. 安装 helm
+
+import {Callout} from "nextra-theme-docs";
+
+<Callout type="warning" emoji="⚠️">
+    U1 节点安装
+</Callout>
+
+# 版本对比
+
+版本对比: [https://helm.sh/zh/docs/topics/version_skew/](https://helm.sh/zh/docs/topics/version_skew/)
+
+检测 k8s 版本 安装合适的helm 版本
+
+```
+root@l2:~# kubectl version
+Client Version: version.Info{Major:"1", Minor:"19", GitVersion:"v1.19.16", GitCommit:"e37e4ab4cc8dcda84f1344dda47a97bb1927d074", GitTreeState:"clean", BuildDate:"2021-10-27T16:25:59Z", GoVersion:"go1.15.15", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"19", GitVersion:"v1.19.16", GitCommit:"e37e4ab4cc8dcda84f1344dda47a97bb1927d074", GitTreeState:"clean", BuildDate:"2021-10-27T16:20:18Z", GoVersion:"go1.15.15", Compiler:"gc", Platform:"linux/amd64"}
+```
+
+对比版本可知 1.19 版本的 k8s 支持的最新 helm 版本是 3.7.x
+
+# 安装 helm
+
+> see [https://helm.sh/zh/docs/intro/install/](https://helm.sh/zh/docs/intro/install/)
+
+
+添加仓库
+
+```
+curl https://baltocdn.com/helm/signing.asc | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null
+sudo apt-get install apt-transport-https --yes
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list
+sudo apt-get update
+```
+
+检测版本 `apt-cache policy helm | grep 3.7`
+
+```
+root@l2:~# apt-cache policy helm | grep 3.7
+     3.7.2-1 500
+     3.7.1-1 500
+     3.7.0-1 500
+```
+
+安装检索出来的最新版本 `apt install helm=3.7.2-1`
+
+# 添加仓库
+
+添加仓库
+`helm repo add bitnami https://charts.bitnami.com/bitnami`
+更新仓库
+`helm repo update`
+
