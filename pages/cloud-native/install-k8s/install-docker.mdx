@@ -54,6 +54,29 @@ sudo apt-get install docker-ce
 }
 ```
 
+
+## 调整 cgroupfs 驱动
+> [WARNING IsDockerSystemdCheck] detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
+
+1: Stop docker service
+```
+systemctl stop docker
+```
+2: change on files /etc/systemd/system/multi-user.target.wants/docker.service and /usr/lib/systemd/system/docker.service
+
+From :
+```
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+```
+TO:
+```
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock --exec-opt native.cgroupdriver=systemd
+```
+
+3. 启动 Docker
+```
+systemctl start docker
+``
 ## 免 Sudo 操作 Docker
 
 如果还没有 docker group 就添加一个：
