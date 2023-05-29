@@ -30,15 +30,15 @@ Kubernetes: `1.19.16`
 
 | 角色 | 主机名 |  网络   |
 | ---- | ---- | ------- |
-|  Master     |  U1  |   `inet 192.168.88.11  netmask 255.255.255.0  broadcast 192.168.88.255` |
-|  Worker 1   |  U2  |   `inet 192.168.88.12  netmask 255.255.255.0  broadcast 192.168.88.255`   |
-|  Worker 2   |  U3  |   `inet 192.168.88.13  netmask 255.255.255.0  broadcast 192.168.88.255`   |
+|  Master     |  Master  |   `inet 192.168.88.11  netmask 255.255.255.0  broadcast 192.168.88.255` |
+|  Worker 1   |  Worker 1  |   `inet 192.168.88.12  netmask 255.255.255.0  broadcast 192.168.88.255`   |
+|  Worker 2   |  Worker 2  |   `inet 192.168.88.13  netmask 255.255.255.0  broadcast 192.168.88.255`   |
 
 
 ## 配置 NFS 共享存储
 
-1. 在U1 上安装 NFS 服务器
-2. 在 U2 / U3 上挂载 NFS 共享目录
+1. 在Master 上安装 NFS 服务器
+2. 在 Worker 1 / Worker 2 上挂载 NFS 共享目录
 
 见 [配置 NFS 共享存储](/cloud-native/install-k8s/install-nfs)
 

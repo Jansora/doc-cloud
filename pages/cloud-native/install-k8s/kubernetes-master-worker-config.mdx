@@ -3,7 +3,7 @@
 import { Callout } from 'nextra-theme-docs'
 
 <Callout type="warning" emoji="⚠️">
-    U1, U2, U3 节点安装请参照具体步骤
+    Master, Worker 1, Worker 2 节点安装请参照具体步骤
 </Callout>
 
 
@@ -18,9 +18,9 @@ import { Callout } from 'nextra-theme-docs'
 > 因在中国大陆, 因此临时采用 aliyun mirror
 
 
-**U1 (MASTER) 执行** 如下命令
+**Master (MASTER) 执行** 如下命令
 
-> 注意以下命令中的 `192.168.88.11` 为 U1 的 IP 地址
+> 注意以下命令中的 `192.168.88.11` 为 Master 的 IP 地址
 ```
 kubeadm init --kubernetes-version 1.19.16 \
 --pod-network-cidr=10.244.0.0/16 \
@@ -32,7 +32,7 @@ kubeadm init --kubernetes-version 1.19.16 \
 
 import { Tab, Tabs } from 'nextra-theme-docs';
 
-在主节点 `U1` 上安装 `nfs-server`
+在主节点 `Master` 上安装 `nfs-server`
 
 <Tabs items={["安装命令", "安装日志"]}>
     <Tab>
@@ -137,13 +137,13 @@ kubeadm join 192.168.88.11:6443 --token 0mynwm.10bk3hdn34e9lgo \
     --discovery-token-ca-cert-hash sha256:51a66dd07069658f42d33923ecee7059a3b35820128a3d5acfaa7d374a9b8494
 ```
 ## 绑定 master 主机本地环境变量
-> U1 (MASTER) 节点执行
+> Master (MASTER) 节点执行
 ```
 echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> /etc/profile
 ```
 ## 配置 网络插件 flannel
 
-> U1 (MASTER) 节点执行
+> Master (MASTER) 节点执行
 
 `kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml`
 
@@ -176,7 +176,7 @@ kube-scheduler-u1            1/1     Running   0          6m39s
 ## 将 slave 节点加入到集群
 
 具体命令取决于主节点创建时打印的日志
-> U2 / U3 (WORKER) 节点执行
+> Worker 1 / Worker 2 (WORKER) 节点执行
 
 `kubeadm join 192.168.88.11:6443 --token 0mynwm.10bk3hdn34e9lgo \ --discovery-token-ca-cert-hash sha256:51a66dd07069658f42d33923ecee7059a3b35820128a3d5acfaa7d374a9b8494`
 
@@ -287,7 +287,7 @@ systemctl start docker
 
 ### Q: 报错docker: Error response from daemon: cgroups: cgroup mountpoint does not exist: unknown. ?
 
-> U1 / U2 / U3 都要执行
+> Master / Worker 1 / Worker 2 都要执行
 
 编辑 `/etc/profile`
 

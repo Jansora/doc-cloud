@@ -2,17 +2,17 @@
 import { Callout } from 'nextra-theme-docs'
 
 <Callout type="warning" emoji="">
-    1. 在 U1 上安装 NFS 服务器
-    2. 在 U2 / U3 上挂载 NFS 共享目录
+    1. 在 Master 上安装 NFS 服务器
+    2. 在 Worker 1 / Worker 2 上挂载 NFS 共享目录
 </Callout>
 
 
-## [U1] 安装 / 配置 NFS 服务器
+## [Master] 安装 / 配置 NFS 服务器
 
 
 import { Tab, Tabs } from 'nextra-theme-docs';
 
-在主节点 `U1` 上安装 `nfs-server`
+在主节点 `Master` 上安装 `nfs-server`
 
 <Tabs items={["安装命令", "安装日志"]}>
     <Tab>
@@ -118,7 +118,7 @@ root@u1:~# sudo cat /proc/fs/nfsd/versions
 -2 +3 +4 +4.1 +4.2
 ```
 
-## [U1] NFS 配置共享目录
+## [Master] NFS 配置共享目录
 
 创建共享目录 `/nfs`
 
@@ -140,7 +140,7 @@ sudo exportfs -a
 ```
 
 
-## [U1] 启动NFS服务器
+## [Master] 启动NFS服务器
 
 在终端中输入以下命令以启动NFS服务。
 
@@ -149,8 +149,8 @@ sudo systemctl start nfs-kernel-server
 ```
 
 
-## [U2] 验证安装结果
-在 `U2` 节点上验证
+## [Worker 1] 验证安装结果
+在 `Worker 1` 节点上验证
 
 1. 安装依赖
 
@@ -161,20 +161,20 @@ sudo apt install nfs-common
 2. 挂载目录
 
 ```
-# 192.168.88.11 为 U1 的 ip
+# 192.168.88.11 为 Master 的 ip
 
 mkdir -p /mnt/nfs
 
 mount 192.168.88.11:/nfs /mnt/nfs
 ```
 
-3. 在 `U2` 共享目录下创建文件进行验证
+3. 在 `Worker 1` 共享目录下创建文件进行验证
 
 ```
 root@u2:/mnt/nfs# echo 'hello, nfs!' > test.txt
 ```
 
-4. 检查 U1 目录数据
+4. 检查 Master 目录数据
 
 ```
 root@u1:~# cd /nfs
@@ -187,9 +187,9 @@ hello, nfs!
 
 验证成功!!
 
-## [U2, U3] 挂载 NFS 并配置开机启动
+## [Worker 1, Worker 2] 挂载 NFS 并配置开机启动
 
-在 `U2 / U3 ` 上分别挂载
+在 `Worker 1 / Worker 2 ` 上分别挂载
 
 1. 安装依赖
 
@@ -204,7 +204,7 @@ sudo apt install nfs-common
 192.168.88.11:/nfs /mnt/nfs nfs default 0 0
 ```
 
-3. 重启 `U2 / U3` 并进行验证
+3. 重启 `Worker 1 / Worker 2` 并进行验证
 
 ```
 Last login: Wed May 10 15:32:10 2023 from 192.168.88.1

@@ -3,7 +3,7 @@
 import {Callout} from "nextra-theme-docs";
 
 <Callout type="warning" emoji="⚠️">
-    U1 节点安装
+    Master 节点安装
 </Callout>
 
 
@@ -29,7 +29,7 @@ mkdir -p kubernetes
 ```
 ## 检测部署状态为 running
 
-U1 节点执行
+Master 节点执行
 
 ```
 kubectl get pods -n kube-system | grep nfs-client
@@ -42,7 +42,7 @@ nfs-client-nfs-subdir-external-provisioner-6f9ccc6df5-z2sml   1/1     Running   
 
 创建通用 100G 的 PVC
 
-U1 节点执行
+Master 节点执行
 ```
 kubectl apply -f https://storage.qiniu.jansora.com/files/uPic/2023/05/12/nfs-pvc.yaml
 ```
@@ -62,7 +62,7 @@ spec:
 
 创建测试 1M 的 PVC
 
-U1 节点执行
+Master 节点执行
 
 ```
 kubectl apply -f https://storage.qiniu.jansora.com/files/uPic/2023/05/12/test-pvc.yaml
@@ -86,7 +86,7 @@ spec:
 
 此 Pod 会在挂载的 NFS 目录下创建一个 SUCCESS 的文件
 
-U1 节点执行
+Master 节点执行
 
 ```
 kubectl apply -f https://storage.qiniu.jansora.com/files/uPic/2023/05/12/test-pod.yaml
@@ -117,7 +117,7 @@ spec:
 
 检查 nfs 共享存储中是否存在该文件
 
-U1 节点执行
+Master 节点执行
 
 ```yaml
 root@u1:~# cd /mnt/nfs
