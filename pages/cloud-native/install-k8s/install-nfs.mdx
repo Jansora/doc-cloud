@@ -22,7 +22,7 @@ sudo apt install nfs-kernel-server
     </Tab>
     <Tab>
 ```
-root@u1:~# sudo apt install nfs-kernel-server
+root@master:~# sudo apt install nfs-kernel-server
 Reading package lists... Done
 Building dependency tree... Done
 Reading state information... Done
@@ -114,7 +114,7 @@ No VM guests are running outdated hypervisor (qemu) binaries on this host.
 您可以运行cat命令`sudo cat /proc/fs/nfsd/versions`来验证正在运行的NFS版本。
 
 ```
-root@u1:~# sudo cat /proc/fs/nfsd/versions
+root@master:~# sudo cat /proc/fs/nfsd/versions
 -2 +3 +4 +4.1 +4.2
 ```
 
@@ -171,17 +171,17 @@ mount 192.168.88.11:/nfs /mnt/nfs
 3. 在 `Worker 1` 共享目录下创建文件进行验证
 
 ```
-root@u2:/mnt/nfs# echo 'hello, nfs!' > test.txt
+root@worker1:/mnt/nfs# echo 'hello, nfs!' > test.txt
 ```
 
 4. 检查 Master 目录数据
 
 ```
-root@u1:~# cd /nfs
-root@u1:/nfs# ls -l
+root@master:~# cd /nfs
+root@master:/nfs# ls -l
 total 4
 -rw-r--r-- 1 nobody nogroup 12 May 10 15:11 test.txt
-root@u1:/nfs# cat test.txt
+root@master:/nfs# cat test.txt
 hello, nfs!
 ```
 
@@ -208,7 +208,7 @@ sudo apt install nfs-common
 
 ```
 Last login: Wed May 10 15:32:10 2023 from 192.168.88.1
-root@u2:~# df -h
+root@worker1:~# df -h
 Filesystem          Size  Used Avail Use% Mounted on
 tmpfs               393M  1.1M  392M   1% /run
 /dev/sda3            47G  6.7G   38G  16% /
@@ -217,13 +217,13 @@ tmpfs               5.0M     0  5.0M   0% /run/lock
 /dev/sda2           2.0G  134M  1.7G   8% /boot
 192.168.88.11:/nfs   47G  6.8G   38G  16% /mnt/nfs
 tmpfs               393M  4.0K  393M   1% /run/user/0
-root@u2:~# cd /mnt/nfs/
-root@u2:/mnt/nfs# ls -l
+root@worker1:~# cd /mnt/nfs/
+root@worker1:/mnt/nfs# ls -l
 total 4
 -rw-r--r-- 1 nobody nogroup 12 May 10 15:11 test.txt
-root@u2:/mnt/nfs# cat test.txt
+root@worker1:/mnt/nfs# cat test.txt
 hello, nfs!
-root@u2:/mnt/nfs#
+root@worker1:/mnt/nfs#
 ```
 
 

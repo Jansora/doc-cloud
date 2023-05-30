@@ -46,7 +46,7 @@ kubeadm init --kubernetes-version 1.19.16 \
 <Tab>
 
 ```
-    root@u1:~# kubeadm init --kubernetes-version 1.19.16 \
+    root@master:~# kubeadm init --kubernetes-version 1.19.16 \
     --pod-network-cidr=10.244.0.0/16 \
     --apiserver-advertise-address=192.168.88.11 \
     --image-repository registry.cn-hangzhou.aliyuncs.com/google_containers
@@ -148,7 +148,7 @@ echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> /etc/profile
 `kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml`
 
 ```
-root@u1:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+root@master:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 podsecuritypolicy.policy/psp.flannel.unprivileged created
 clusterrole.rbac.authorization.k8s.io/flannel created
 clusterrolebinding.rbac.authorization.k8s.io/flannel created
@@ -161,7 +161,7 @@ clusterrolebinding.rbac.authorization.k8s.io/flannel unchanged
 ```
 ## 等到状态变为正常
 ```
-root@u1:~# kubectl get pods -n kube-system
+root@master:~# kubectl get pods -n kube-system
 NAME                         READY   STATUS    RESTARTS   AGE
 coredns-6c76c8bb89-n7pwh     1/1     Running   0          6m29s
 coredns-6c76c8bb89-tkgb9     1/1     Running   0          6m29s

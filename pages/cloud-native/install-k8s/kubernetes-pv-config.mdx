@@ -34,7 +34,7 @@ Master 节点执行
 ```
 kubectl get pods -n kube-system | grep nfs-client
 
-root@u1:/mnt# kubectl get pods -n kube-system | grep nfs-client
+root@master:/mnt# kubectl get pods -n kube-system | grep nfs-client
 nfs-client-nfs-subdir-external-provisioner-6f9ccc6df5-z2sml   1/1     Running   0          7m7s
 ```
 
@@ -120,19 +120,19 @@ spec:
 Master 节点执行
 
 ```yaml
-root@u1:~# cd /mnt/nfs
-root@u1:/mnt/nfs# ls -l
+root@master:~# cd /mnt/nfs
+root@master:/mnt/nfs# ls -l
 total 24
 -rw-r--r-- 1 root   root       13 May 11 14:22 a.txt
 drwxrwxrwx 3 nobody nogroup  4096 May 12 06:36 kubernetes
 drwx------ 2 root   root    16384 May 11 14:20 lost+found
-root@u1:/mnt/nfs# cd kubernetes/
-root@u1:/mnt/nfs/kubernetes# ls -l
+root@master:/mnt/nfs# cd kubernetes/
+root@master:/mnt/nfs/kubernetes# ls -l
 total 8
 drwxrwxrwx 2 nobody nogroup 4096 May 12 06:36 default-nfs-pvc-pvc-3597cad2-005b-4da2-b6bc-f69f9ccdb8c1
 drwxrwxrwx 2 nobody nogroup 4096 May 12 07:11 default-test-pvc-pvc-4214a4a0-cc2a-41df-9251-9e08ed536e8b
-root@u1:/mnt/nfs/kubernetes# cd default-test-pvc-pvc-4214a4a0-cc2a-41df-9251-9e08ed536e8b/
-root@u1:/mnt/nfs/kubernetes/default-test-pvc-pvc-4214a4a0-cc2a-41df-9251-9e08ed536e8b# ls -l
+root@master:/mnt/nfs/kubernetes# cd default-test-pvc-pvc-4214a4a0-cc2a-41df-9251-9e08ed536e8b/
+root@master:/mnt/nfs/kubernetes/default-test-pvc-pvc-4214a4a0-cc2a-41df-9251-9e08ed536e8b# ls -l
 total 0
 -rw-r--r-- 1 nobody nogroup 0 May 12 07:11 SUCCESS
 ```
