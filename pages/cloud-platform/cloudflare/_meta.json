@@ -1,4 +1,5 @@
 {
   "inet-mapping": "Cloudflare 怎么做内网穿透",
+  "proxy-ssh": "Cloudflare 代理 SSH / RDP ",
   "ssl": "申请 SSL 证书 (Cloudflare + acme.sh)"
 }

@@ -1,0 +1,52 @@
+# Cloudflare 代理 SSH / RDP
+
+
+## 代理 SSH
+
+> 服务器端首先需要挂载到该 tunnel
+
+Cloudflare 服务器配置如下
+
+![wiBfJp](https://storage.qiniu.jansora.com/files/uPic/2023/06/08/wiBfJp.png)
+
+
+本地安装 cloudflare 客户端后映射
+
+```
+# 将服务器的ssh端口映射到本地的 6666 端口
+cloudflared access ssh --hostname racknerd-ssh.jansora.app --destination 127.0.0.1:22 --url 127.0.0.1:6666
+```
+
+连接测试
+
+```
+ssh root@127.0.0.1 -p 6666
+```
+
+日志如下:
+
+```
+○ ssh root@127.0.0.1 -p 6666
+The authenticity of host '[127.0.0.1]:6666 ([127.0.0.1]:6666)' can't be established.
+RSA key fingerprint is SHA256:jtjjqFjbe0bULVQ20qXSXYqmUAt5sZYwvbwI7nevz50.
+This host key is known by the following other names/addresses:
+    ~/.ssh/known_hosts:18: [117.172.140.211]:22
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '[127.0.0.1]:6666' (RSA) to the list of known hosts.
+root@127.0.0.1's password:
+Welcome to Ubuntu 20.04 LTS (GNU/Linux 5.4.0-28-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+ * Strictly confined Kubernetes makes edge and IoT secure. Learn how MicroK8s
+   just raised the bar for easy, resilient and secure K8s cluster deployment.
+
+   https://ubuntu.com/engage/secure-kubernetes-at-the-edge
+New release '22.04.2 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+Last login: Thu Jun  8 03:07:22 2023 from 202.85.218.126
+root@racknerd-33a04f:~#
+```
