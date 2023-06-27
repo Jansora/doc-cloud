@@ -1,5 +1,6 @@
 {
   "aliyun": "阿里云",
   "cloud-tencent": "腾讯云",
-  "cloudflare": "Cloudflare"
+  "cloudflare": "Cloudflare",
+  "vercel": "Vercel"
 }

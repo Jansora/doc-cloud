@@ -1,0 +1,101 @@
+# 免翻墙免费搭建 ChatGPT 中转服务
+
+## 安装前说明
+本项目搭建基于 https://github.com/pengzhile/pandora 的 serverless 版本 (https://github.com/pengzhile/pandora-cloud-serverless) 搭建.
+
+部署于免费的托管平台 Vercel (https://vercel.com/)
+
+可实现以下特点:
+1. 免翻墙
+2. 通过自己账号的 `access token` 访问, 与官网体验基本一致 (对话记录均可保存)
+3. 无服务器架构 (托管于 Vercel ) , `access token` 存储于自己的浏览器本地, 安全
+4. `access token` 只有 14 天. 到期后需要重新获取, 如何获取见 FAQ
+
+## 安装步骤
+
+### 1. 注册登录 vercel
+
+https://vercel.com/
+
+通过 github 账号登录, 并允许 vercel 获取你的创建 repo 权限
+
+> gitlab / bitbucket 也可
+
+
+### 2. 部署项目
+
+https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fpengzhile%2Fpandora-cloud-serverless
+
+通过该链接部署项目 (重新创建新的repo)
+
+![mVJmo7](https://storage.qiniu.jansora.com/files/uPic/2023/06/27/mVJmo7.png)
+
+
+### 3. 添加自定义 domain ()
+
+> 非必须, 如果无需添加自定义 domain 可直接使用官方提供免费域名访问, 跳转至步骤 4
+
+
+绑定 domain 至 vercel 需要添加 dns 记录.
+
+这里提供一个目前有效的方法, 见下图所示, 此动作会把 vercel.jansora.app 下的泛域名都转发到 vercel 服务器
+
+![VpR6eW](https://storage.qiniu.jansora.com/files/uPic/2023/06/27/VpR6eW.png)
+
+
+> 此演示方法可能会过期, 最新说明请查看 vercel 官方文档
+
+
+我这边添加了一个域名 http://chat.vercel.jansora.app/
+
+
+
+
+
+### 4. 查看公网访问域名
+
+![sF6vWk](https://storage.qiniu.jansora.com/files/uPic/2023/06/27/sF6vWk.png)
+
+
+> 也可使用官方提供的免费域名访问
+
+### 5. 登录
+
+打开 http://chat.vercel.jansora.app/
+
+使用 access token 登录, 如何获取 token 见FAQ
+
+
+![V6y7BQ](https://storage.qiniu.jansora.com/files/uPic/2023/06/27/V6y7BQ.png)
+
+
+
+### 6. 使用 GPT 4 聊天
+
+
+![YN3XJJ](https://storage.qiniu.jansora.com/files/uPic/2023/06/27/YN3XJJ.png)
+
+
+
+## FAQ
+
+### 不搭建, 该怎么免翻墙访问?
+
+https://github.com/pengzhile/pandora 项目作者已提供一个  https://chat.zhile.io  共享地址, 可免费访问, 保险期间, 请自己搭建
+
+### 如何获取  access token ?
+
+> 见 https://github.com/pengzhile/pandora/blob/master/doc/wiki.md#%E5%85%B3%E4%BA%8E-access-token
+
+
+### 更多文档请关注
+
+1. https://github.com/pengzhile/pandora
+2. https://github.com/pengzhile/pandora-cloud-serverless
+
+### 补充说明
+
+更加保险的做法是.
+1. 在美区购买一个服务器, 一年只需几十 RMB, 部署代理 ChatGPT 服务.
+2. 挂载ChatGPT 服务 到 Cloudflare tunnel 边缘节点, 本地挂载 Cloudflare tunnel 节点, 实现网络打通, 网络走 Cloudflare 中转, 非常稳定
+3. 实现本地端口本地访问 ChatGPT
