@@ -17,7 +17,7 @@ curl https://get.acme.sh | sh
 注册账户
 
 ```
-acme.sh --register-account -m zhangyue1936@gmail.com
+acme.sh --register-account -m xxx@gmail.com
 ```
 
 ## 2. 配置 Cloudflare
@@ -48,7 +48,7 @@ export CF_Zone_ID="xxx"
 使用 `acme.sh` 为您的域名颁发 SSL 证书：
 
 ```
-/root/.acme.sh/acme.sh --issue --force --dns dns_cf -d 'jansora.app' -d '*.jansora.app' -d '*.localhost.jansora.app' -d '*.asiainfo.jansora.app'
+/root/.acme.sh/acme.sh --issue --force --dns dns_cf -d 'jansora.app' -d '*.jansora.app' -d '*.localhost.jansora.app'
 ```
 
 如果证书颁发成功，您将看到证书文件的路径。
