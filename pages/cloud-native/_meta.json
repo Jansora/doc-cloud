@@ -1,3 +1,4 @@
 {
-  "install-k8s": "安装 kubernetes 集群"
+  "install-k8s": "安装 kubernetes 集群",
+  "podman": "Podman"
 }

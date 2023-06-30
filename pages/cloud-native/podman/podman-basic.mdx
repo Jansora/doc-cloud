@@ -1,0 +1,30 @@
+# Podman 基本使用
+
+## 安装(Mac)
+
+```
+brew install podman
+```
+
+## 常用命令
+
+初始化一个名为 `default` machine
+
+```
+podman machine init default
+```
+
+配置 root 权限
+```
+podman machine set --rootful default
+```
+
+启动 machine
+```
+podman machine start default
+```
+
+关闭 machine
+```
+podman machine stop default
+```
