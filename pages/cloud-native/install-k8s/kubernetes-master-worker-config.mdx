@@ -20,11 +20,11 @@ import { Callout } from 'nextra-theme-docs'
 
 **Master (MASTER) 执行** 如下命令
 
-> 注意以下命令中的 `192.168.88.11` 为 Master 的 IP 地址
+> 注意以下命令中的 `192.168.88.101` 为 Master 的 IP 地址
 ```
 kubeadm init --kubernetes-version 1.19.16 \
 --pod-network-cidr=10.244.0.0/16 \
---apiserver-advertise-address=192.168.88.11 \
+--apiserver-advertise-address=192.168.88.101 \
 --image-repository registry.cn-hangzhou.aliyuncs.com/google_containers
 ```
 
@@ -39,7 +39,7 @@ import { Tab, Tabs } from 'nextra-theme-docs';
 ```
 kubeadm init --kubernetes-version 1.19.16 \
 --pod-network-cidr=10.244.0.0/16 \
---apiserver-advertise-address=192.168.88.11 \
+--apiserver-advertise-address=192.168.88.101 \
 --image-repository registry.cn-hangzhou.aliyuncs.com/google_containers
 ```
     </Tab>
@@ -48,7 +48,7 @@ kubeadm init --kubernetes-version 1.19.16 \
 ```
     root@master:~# kubeadm init --kubernetes-version 1.19.16 \
     --pod-network-cidr=10.244.0.0/16 \
-    --apiserver-advertise-address=192.168.88.11 \
+    --apiserver-advertise-address=192.168.88.101 \
     --image-repository registry.cn-hangzhou.aliyuncs.com/google_containers
     W0512 04:36:21.392604    1371 configset.go:348] WARNING: kubeadm cannot validate component configs for API groups [kubelet.config.k8s.io kubeproxy.config.k8s.io]
     [init] Using Kubernetes version: v1.19.16
@@ -59,15 +59,15 @@ kubeadm init --kubernetes-version 1.19.16 \
     [certs] Using certificateDir folder "/etc/kubernetes/pki"
     [certs] Generating "ca" certificate and key
     [certs] Generating "apiserver" certificate and key
-    [certs] apiserver serving cert is signed for DNS names [kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local u1] and IPs [10.96.0.1 192.168.88.11]
+    [certs] apiserver serving cert is signed for DNS names [kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster.local u1] and IPs [10.96.0.1 192.168.88.101]
     [certs] Generating "apiserver-kubelet-client" certificate and key
     [certs] Generating "front-proxy-ca" certificate and key
     [certs] Generating "front-proxy-client" certificate and key
     [certs] Generating "etcd/ca" certificate and key
     [certs] Generating "etcd/server" certificate and key
-    [certs] etcd/server serving cert is signed for DNS names [localhost u1] and IPs [192.168.88.11 127.0.0.1 ::1]
+    [certs] etcd/server serving cert is signed for DNS names [localhost u1] and IPs [192.168.88.101 127.0.0.1 ::1]
     [certs] Generating "etcd/peer" certificate and key
-    [certs] etcd/peer serving cert is signed for DNS names [localhost u1] and IPs [192.168.88.11 127.0.0.1 ::1]
+    [certs] etcd/peer serving cert is signed for DNS names [localhost u1] and IPs [192.168.88.101 127.0.0.1 ::1]
     [certs] Generating "etcd/healthcheck-client" certificate and key
     [certs] Generating "apiserver-etcd-client" certificate and key
     [certs] Generating "sa" key and public key
@@ -116,7 +116,7 @@ kubeadm init --kubernetes-version 1.19.16 \
 
     Then you can join any number of worker nodes by running the following on each as root:
 
-    kubeadm join 192.168.88.11:6443 --token 8bfaen.baxw6mn7xgr6rp2f \
+    kubeadm join 192.168.88.101:6443 --token 8bfaen.baxw6mn7xgr6rp2f \
     --discovery-token-ca-cert-hash sha256:34b9f2783d89313c38b0e7503f8a941d992618d54f50b4c51aaf57236cde31db
     ```
 </Tab>
@@ -133,7 +133,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 Then you can join any number of worker nodes by running the following on each as root:
 
-kubeadm join 192.168.88.11:6443 --token 0mynwm.10bk3hdn34e9lgo \
+kubeadm join 192.168.88.101:6443 --token 0mynwm.10bk3hdn34e9lgo \
     --discovery-token-ca-cert-hash sha256:51a66dd07069658f42d33923ecee7059a3b35820128a3d5acfaa7d374a9b8494
 ```
 ## 绑定 master 主机本地环境变量
@@ -178,7 +178,7 @@ kube-scheduler-u1            1/1     Running   0          6m39s
 具体命令取决于主节点创建时打印的日志
 > Worker 1 / Worker 2 (WORKER) 节点执行
 
-`kubeadm join 192.168.88.11:6443 --token 0mynwm.10bk3hdn34e9lgo \ --discovery-token-ca-cert-hash sha256:51a66dd07069658f42d33923ecee7059a3b35820128a3d5acfaa7d374a9b8494`
+`kubeadm join 192.168.88.101:6443 --token 0mynwm.10bk3hdn34e9lgo \ --discovery-token-ca-cert-hash sha256:51a66dd07069658f42d33923ecee7059a3b35820128a3d5acfaa7d374a9b8494`
 
 部分日志如下
 ```

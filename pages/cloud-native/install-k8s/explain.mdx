@@ -1,5 +1,8 @@
 # 1. 安装准备
 
+> 有参考 https://blog.frognew.com/2023/06/kubeadm-install-kubernetes-1.27.html
+
+
 ## 机器要求
 > 如果是本地私有部署, 在资源紧张的情况下, 可通过 PVE 虚拟化出三台 `Linux` 机器 (可视情况进行内存超配)
 
@@ -13,14 +16,11 @@
 ## 域名配置
 非必需品, 但如果要进行 ingress 配置, 最好拥有一个域名
 
-
-
-
 ## 版本说明
 
-Docker: `19.03.15`
+Containerd: `v1.7.2`
 
-Kubernetes: `1.19.16`
+Kubernetes: `1.28.2`
 
 > 此 Docker + Kubernetes 版本配套的相关软件均已经验证过 (PS: 版本适配是很麻烦的事情)
 
@@ -30,9 +30,9 @@ Kubernetes: `1.19.16`
 
 | 角色 | 主机名 |  网络   |
 | ---- | ---- | ------- |
-|  Master     |  Master  |   `inet 192.168.88.11  netmask 255.255.255.0  broadcast 192.168.88.255` |
-|  Worker 1   |  Worker 1  |   `inet 192.168.88.12  netmask 255.255.255.0  broadcast 192.168.88.255`   |
-|  Worker 2   |  Worker 2  |   `inet 192.168.88.13  netmask 255.255.255.0  broadcast 192.168.88.255`   |
+|  Master     |  Master  |   `inet 192.168.88.101  netmask 255.255.255.0  broadcast 192.168.88.255` |
+|  Worker 1   |  Worker 1  |   `inet 192.168.88.102  netmask 255.255.255.0  broadcast 192.168.88.255`   |
+|  Worker 2   |  Worker 2  |   `inet 192.168.88.103  netmask 255.255.255.0  broadcast 192.168.88.255`   |
 
 
 ## 配置 NFS 共享存储

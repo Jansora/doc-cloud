@@ -161,11 +161,11 @@ sudo apt install nfs-common
 2. 挂载目录
 
 ```
-# 192.168.88.11 为 Master 的 ip
+# 192.168.88.101 为 Master 的 ip
 
 mkdir -p /mnt/nfs
 
-mount 192.168.88.11:/nfs /mnt/nfs
+mount 192.168.88.101:/nfs /mnt/nfs
 ```
 
 3. 在 `Worker 1` 共享目录下创建文件进行验证
@@ -201,7 +201,7 @@ sudo apt install nfs-common
 2. 您需要编辑`/etc/fstab` 文件并添加一行类似于以下内容的条目：
 
 ```
-192.168.88.11:/nfs /mnt/nfs nfs default 0 0
+192.168.88.101:/nfs /mnt/nfs nfs default 0 0
 ```
 
 3. 重启 `Worker 1 / Worker 2` 并进行验证
@@ -215,7 +215,7 @@ tmpfs               393M  1.1M  392M   1% /run
 tmpfs               2.0G     0  2.0G   0% /dev/shm
 tmpfs               5.0M     0  5.0M   0% /run/lock
 /dev/sda2           2.0G  134M  1.7G   8% /boot
-192.168.88.11:/nfs   47G  6.8G   38G  16% /mnt/nfs
+192.168.88.101:/nfs   47G  6.8G   38G  16% /mnt/nfs
 tmpfs               393M  4.0K  393M   1% /run/user/0
 root@worker1:~# cd /mnt/nfs/
 root@worker1:/mnt/nfs# ls -l

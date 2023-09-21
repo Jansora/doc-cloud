@@ -94,7 +94,7 @@ spec:
             path: /
 ```
 
-部署成功之后服务会暴露在 Master (`192.168.88.11`) 的 `30080` 端口. 需要通过主机名 `github-onlinecompiler.kubernetes.jansora.com` 才能访问
+部署成功之后服务会暴露在 Master (`192.168.88.101`) 的 `30080` 端口. 需要通过主机名 `github-onlinecompiler.kubernetes.jansora.com` 才能访问
 
 # 外部 Web nginx 配置验证
 
@@ -116,7 +116,7 @@ server {
         proxy_redirect off;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Scheme $scheme;
-        proxy_pass http://192.168.88.11:30080/;
+        proxy_pass http://192.168.88.101:30080/;
     }
 }
 ```
