@@ -1,0 +1,174 @@
+# 4. 安装 Containerd (v1.7.2)
+
+## 部署Pod Network组件Calico
+
+选择calico作为k8s的Pod网络组件，下面使用helm在k8s集群中安装calico。
+
+下载`tigera-operator`的helm chart:
+
+```
+wget https://github.com/projectcalico/calico/releases/download/v3.26.0/tigera-operator-v3.26.0.tgz
+```
+
+查看这个chart的中可定制的配置:
+
+
+```
+helm show values tigera-operator-v3.26.0.tgz
+
+imagePullSecrets: {}
+
+installation:
+  enabled: true
+  kubernetesProvider: ""
+
+apiServer:
+  enabled: true
+
+certs:
+  node:
+    key:
+    cert:
+    commonName:
+  typha:
+    key:
+    cert:
+    commonName:
+    caBundle:
+
+# Resource requests and limits for the tigera/operator pod.
+resources: {}
+
+# Tolerations for the tigera/operator pod.
+tolerations:
+- effect: NoExecute
+  operator: Exists
+- effect: NoSchedule
+  operator: Exists
+
+# NodeSelector for the tigera/operator pod.
+nodeSelector:
+  kubernetes.io/os: linux
+
+# Custom annotations for the tigera/operator pod.
+podAnnotations: {}
+
+# Custom labels for the tigera/operator pod.
+podLabels: {}
+
+# Image and registry configuration for the tigera/operator pod.
+tigeraOperator:
+  image: tigera/operator
+  version: v1.30.0
+  registry: quay.io
+calicoctl:
+  image: docker.io/calico/ctl
+  tag: v3.26.0
+
+```
+
+使用helm安装calico：
+
+```
+helm install calico tigera-operator-v3.26.0.tgz -n kube-system  --create-namespace
+
+```
+
+等待并确认所有pod处于Running状态:
+
+```
+kubectl get pod -n kube-system | grep tigera-operator
+tigera-operator-689d868448-hxzdf   1/1     Running   0          117s
+
+kubectl get pods -n calico-system
+NAME                                      READY   STATUS    RESTARTS   AGE
+calico-kube-controllers-7ffbf7c7d-56t7h   1/1     Running   0          12h
+calico-node-2ptk8                         1/1     Running   0          12h
+calico-node-bxggx                         1/1     Running   0          12h
+calico-node-xrp2q                         1/1     Running   0          12h
+calico-typha-576c5874b9-gvtmx             1/1     Running   0          12h
+calico-typha-576c5874b9-t6wcz             1/1     Running   0          12h
+csi-node-driver-cxlzr                     2/2     Running   0          12h
+csi-node-driver-jtm4f                     2/2     Running   0          12h
+csi-node-driver-srtvh                     2/2     Running   0          12h
+
+```
+
+查看一下calico向k8s中添加的api资源:
+
+
+```
+kubectl api-resources | grep calico
+bgpconfigurations                                                                 crd.projectcalico.org/v1               false        BGPConfiguration
+bgpfilters                                                                        crd.projectcalico.org/v1               false        BGPFilter
+bgppeers                                                                          crd.projectcalico.org/v1               false        BGPPeer
+blockaffinities                                                                   crd.projectcalico.org/v1               false        BlockAffinity
+caliconodestatuses                                                                crd.projectcalico.org/v1               false        CalicoNodeStatus
+clusterinformations                                                               crd.projectcalico.org/v1               false        ClusterInformation
+felixconfigurations                                                               crd.projectcalico.org/v1               false        FelixConfiguration
+globalnetworkpolicies                                                             crd.projectcalico.org/v1               false        GlobalNetworkPolicy
+globalnetworksets                                                                 crd.projectcalico.org/v1               false        GlobalNetworkSet
+hostendpoints                                                                     crd.projectcalico.org/v1               false        HostEndpoint
+ipamblocks                                                                        crd.projectcalico.org/v1               false        IPAMBlock
+ipamconfigs                                                                       crd.projectcalico.org/v1               false        IPAMConfig
+ipamhandles                                                                       crd.projectcalico.org/v1               false        IPAMHandle
+ippools                                                                           crd.projectcalico.org/v1               false        IPPool
+ipreservations                                                                    crd.projectcalico.org/v1               false        IPReservation
+kubecontrollersconfigurations                                                     crd.projectcalico.org/v1               false        KubeControllersConfiguration
+networkpolicies                                                                   crd.projectcalico.org/v1               true         NetworkPolicy
+networksets                                                                       crd.projectcalico.org/v1               true         NetworkSet
+bgpconfigurations                 bgpconfig,bgpconfigs                            projectcalico.org/v3                   false        BGPConfiguration
+bgpfilters                                                                        projectcalico.org/v3                   false        BGPFilter
+bgppeers                                                                          projectcalico.org/v3                   false        BGPPeer
+blockaffinities                   blockaffinity,affinity,affinities               projectcalico.org/v3                   false        BlockAffinity
+caliconodestatuses                caliconodestatus                                projectcalico.org/v3                   false        CalicoNodeStatus
+clusterinformations               clusterinfo                                     projectcalico.org/v3                   false        ClusterInformation
+felixconfigurations               felixconfig,felixconfigs                        projectcalico.org/v3                   false        FelixConfiguration
+globalnetworkpolicies             gnp,cgnp,calicoglobalnetworkpolicies            projectcalico.org/v3                   false        GlobalNetworkPolicy
+globalnetworksets                                                                 projectcalico.org/v3                   false        GlobalNetworkSet
+hostendpoints                     hep,heps                                        projectcalico.org/v3                   false        HostEndpoint
+ipamconfigurations                ipamconfig                                      projectcalico.org/v3                   false        IPAMConfiguration
+ippools                                                                           projectcalico.org/v3                   false        IPPool
+ipreservations                                                                    projectcalico.org/v3                   false        IPReservation
+kubecontrollersconfigurations                                                     projectcalico.org/v3                   false        KubeControllersConfiguration
+networkpolicies                   cnp,caliconetworkpolicy,caliconetworkpolicies   projectcalico.org/v3                   true         NetworkPolicy
+networksets                       netsets                                         projectcalico.org/v3                   true         NetworkSet
+profiles                                                                          projectcalico.org/v3                   false        Profile
+
+```
+
+这些api资源是属于calico的，因此不建议使用kubectl来管理，推荐按照calicoctl来管理这些api资源。 将calicoctl安装为kubectl的插件:
+
+```
+cd /usr/local/bin
+curl -o kubectl-calico -O -L  "https://github.com/projectcalico/calicoctl/releases/download/v3.21.5/calicoctl-linux-amd64"
+chmod +x kubectl-calico
+```
+
+验证插件正常工作:
+
+```
+kubectl calico -h
+
+```
+
+验证k8s DNS是否可用
+
+
+```
+kubectl run curl --image=radial/busyboxplus:curl -it
+If you don't see a command prompt, try pressing enter.
+[ root@curl:/ ]$
+
+```
+
+进入后执行nslookup kubernetes.default确认解析正常:
+
+```
+nslookup kubernetes.default
+Server:    10.96.0.10
+Address 1: 10.96.0.10 kube-dns.kube-system.svc.cluster.local
+
+Name:      kubernetes.default
+Address 1: 10.96.0.1 kubernetes.default.svc.cluster.local
+```

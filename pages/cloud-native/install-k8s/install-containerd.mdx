@@ -1,0 +1,192 @@
+# 4. 安装 Containerd (v1.7.2)
+
+import { Callout } from 'nextra-theme-docs'
+
+<Callout type="warning" emoji="⚠️">
+    Master, Worker 1, Worker 2 节点均要安装
+</Callout>
+
+
+下载最新版本的 Containerd, 截止到目前最新版本是 `1.7.2`
+
+
+
+下载Containerd的二进制包， 需要注意cri-containerd-(cni-)-VERSION-OS-ARCH.tar.gz发行包自containerd 1.6版本起已经被弃用，
+
+在某些 Linux 发行版上无法正常工作，并将在containerd 2.0版本中移除，这里下载containerd-<VERSION>-<OS>-<ARCH>.tar.gz的发行包，后边在单独下载安装runc和CNI plugins:
+
+
+```
+wget https://github.com/containerd/containerd/releases/download/v1.7.2/containerd-1.7.2-linux-amd64.tar.gz
+```
+将其解压缩到`/usr/local`下:
+```
+tar Cxzvf /usr/local containerd-1.7.2-linux-amd64.tar.gz
+
+bin/
+bin/containerd-shim-runc-v1
+bin/containerd-shim-runc-v2
+bin/containerd-stress
+bin/containerd
+bin/containerd-shim
+bin/ctr
+
+```
+
+接下来从runc的github上单独下载安装runc，该二进制文件是静态构建的，并且应该适用于任何Linux发行版。
+
+```
+wget https://github.com/opencontainers/runc/releases/download/v1.1.7/runc.amd64
+install -m 755 runc.amd64 /usr/local/sbin/runc
+```
+接下来生成containerd的配置文件:
+
+
+```
+mkdir -p /etc/containerd
+containerd config default > /etc/containerd/config.toml
+```
+
+根据文档Container runtimes中的内容，对于使用systemd作为init system的Linux的发行版，
+使用systemd作为容器的cgroup driver可以确保服务器节点在资源紧张的情况更加稳定，因此这里配置各个节点上containerd的cgroup driver为systemd。
+
+
+修改前面生成的配置文件`/etc/containerd/config.toml`：
+
+```
+[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+  ...
+  [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+    SystemdCgroup = true
+```
+
+再修改`/etc/containerd/config.toml`中的
+
+```
+[plugins."io.containerd.grpc.v1.cri"]
+  ...
+  # sandbox_image = "registry.k8s.io/pause:3.8"
+  sandbox_image = "registry.aliyuncs.com/google_containers/pause:3.9"
+```
+
+> 如果你的containerd版本和操作系统和本文的一致, 也可以直接下载此文件,  https://cdn.jansora.com/files/uPic/2023/09/21/config.toml
+
+为了通过systemd启动containerd，请还需要从
+https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
+下载`containerd.service`单元文件，并将其放置在 `/etc/systemd/system/containerd.service`中。 配置containerd开机启动，并启动containerd，执行以下命令:
+
+```
+systemctl daemon-reload
+systemctl enable containerd --now
+```
+
+下载安装crictl工具:
+```
+wget https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.27.0/crictl-v1.27.0-linux-amd64.tar.gz
+tar -zxvf crictl-v1.27.0-linux-amd64.tar.gz
+install -m 755 crictl /usr/local/bin/crictl
+```
+使用crictl测试一下，确保可以打印出版本信息并且没有错误信息输出:
+
+```
+crictl --runtime-endpoint=unix:///run/containerd/containerd.sock  version
+
+Version:  0.1.0
+RuntimeName:  containerd
+RuntimeVersion:  v1.7.2
+RuntimeApiVersion:  v1
+```
+
+
+
+
+
+
+## 安装依赖
+如果你过去安装过 docker，先删掉:
+
+```bash
+sudo apt-get remove docker docker-engine docker.io
+```
+首先安装依赖:
+```bash
+sudo apt-get install apt-transport-https ca-certificates curl gnupg2 software-properties-common
+```
+## 添加 Docker-CE  包源
+信任 Docker 的 GPG 公钥:
+```bash
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+```
+
+添加软件仓库:
+编辑仓库源文件 `sudo vim /etc/apt/sources.list`,  文件末尾新加一行
+```bash
+deb [arch=amd64] https://mirrors.ustc.edu.cn/docker-ce/linux/debian stretch stable
+```
+
+更新镜像源
+```
+sudo apt update
+```
+## 安装 Docker-CE
+```bash
+sudo apt-get install docker-ce
+```
+## 配置 Docker Hub 国内源
+编辑 /etc/docker/daemon.json  `sudo vim /etc/docker/daemon.json` 加入：
+中科大源
+
+```json
+{
+  "registry-mirrors": ["https://docker.mirrors.ustc.edu.cn/"]
+}
+```
+
+阿里云私有源(请配成自己的噢):
+
+```json
+{
+  "registry-mirrors": ["https://u13zwy2w.mirror.aliyuncs.com"]
+}
+```
+
+
+## 调整 cgroupfs 驱动
+> [WARNING IsDockerSystemdCheck] detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
+
+1: Stop docker service
+```
+systemctl stop docker
+```
+2: change on files /etc/systemd/system/multi-user.target.wants/docker.service and /usr/lib/systemd/system/docker.service
+
+From :
+```
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+```
+TO:
+```
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock --exec-opt native.cgroupdriver=systemd
+```
+
+3. 启动 Docker
+```
+systemctl start docker
+``
+## 免 Sudo 操作 Docker
+
+如果还没有 docker group 就添加一个：
+
+```bash
+sudo groupadd docker
+```
+
+将用户加入该 group 内。
+
+```bash
+sudo gpasswd -a ${USER} docker
+```
+
+然后 **退出并重新登录** 就生效啦。
+
+#

@@ -2,12 +2,15 @@
   "explain": "1. 安装准备",
   "install-nfs": "2. 安装 NFS 共享存储",
   "disable-swap": "3. 禁用交换分区",
-  "install-docker": "4. 安装 Docker (19.03.15)",
-  "install-kubernetes": "5. 安装 K8S (1.19.16)",
-  "kubernetes-master-worker-config": "6. K8S 主从配置",
+  "install-containerd": "4. 安装 Containerd (v1.7.2)",
+  "install-kubernetes": "5. 安装 K8S (1.28.2)",
+  "kubernetes-master-config": "6. K8S 主节点安装",
+
   "helm": "7. 安装 helm",
-  "kubernetes-pv-config": "8. 动态 PV 配置",
-  "kubernetes-dashboard": "9. 部署 Dashboard",
-  "nginx-ingress-controller": "10. 部署 Nginx Ingress ",
-  "validate-k8s": "11. 验证 kubernetes 集群"
+  "install-calico": "8. 安装网络插件 calico",
+  "kubernetes-worker-config": "9. K8S 从节点加入",
+  "kubernetes-pv-config": "10. 动态 PV 配置",
+  "kubernetes-dashboard": "11. 部署 Dashboard",
+  "nginx-ingress-controller": "12. 部署 Nginx Ingress ",
+  "validate-k8s": "13. 验证 kubernetes 集群"
 }

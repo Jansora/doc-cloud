@@ -10,4 +10,15 @@ import { Callout } from 'nextra-theme-docs'
 # /swap.img     none    swap    sw      0       0
 ```
 
+swappiness参数调整，修改`/etc/sysctl.d/99-kubernetes-cri.conf`添加下面一行：
+
+swappiness参数调整，修改/etc/sysctl.d/99-kubernetes-cri.conf添加下面一行：
+
+```
+vm.swappiness=0
+```
+执行`sysctl -p /etc/sysctl.d/99-kubernetes-cri.conf`使修改生效。
+
+
+
 重启

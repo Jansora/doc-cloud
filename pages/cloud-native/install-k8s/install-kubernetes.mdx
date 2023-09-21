@@ -1,4 +1,4 @@
-# 5. 安装 kubernetes (1.19.16)
+# 5. 安装 kubernetes (1.28.2)
 
 import { Callout } from 'nextra-theme-docs'
 
@@ -7,33 +7,39 @@ import { Callout } from 'nextra-theme-docs'
 </Callout>
 
 
+## 安装 kubeadm，kubectl，kubelet 1.28.2
 
-在 `/etc/apt/sources.list` 结尾 加入阿里云镜像源
-
-```
-......
-
-## kubeadm及kubernetes组件安装源
-deb https://mirrors.aliyun.com/kubernetes/apt kubernetes-xenial main
-```
-
-
-
-安装 k8s 密钥
-```
-curl https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg |sudo apt-key add -
-```
-更新软件包
-```
-apt update
-```
-
-## 安装 kubeadm，kubectl，kubelet 1.19.16
-
-安装 kubeadm，kubectl，kubelet 软件包 1.19.16 版本。
+加入阿里云镜像源, 并安装
 
 ```
-apt install kubeadm=1.19.16-00 kubelet=1.19.16-00 kubectl=1.19.16-00
+apt-get update
+apt-get install -y apt-transport-https ca-certificates curl
+
+curl -s https://mirrors.aliyun.com/kubernetes/apt/doc/apt-key.gpg | sudo apt-key add -
+
+
+tee /etc/apt/sources.list.d/kubernetes.list <<-'EOF'
+deb https://mirrors.aliyun.com/kubernetes/apt/ kubernetes-xenial main
+EOF
 ```
+
+安装 kubeadm，kubectl，kubelet 软件包 1.28.2 版本。
+
+```
+apt install kubeadm=1.28.2-00 kubelet=1.28.2-00 kubectl=1.28.2-00
+
+apt-mark hold kubelet kubeadm kubectl
+
+
+```
+
+> 上面的命令在安装kubeadm, kubectl, kubelet 时，会自动安装依赖项conntrack, cri-tools, ebtables, kubernetes-cni, soca
+
+
+运行kubelet --help可以看到原来kubelet的绝大多数命令行flag参数都被DEPRECATED了，官方推荐我们使用--config指定配置文件，并在配置文件中指定原来这些flag所配置的内容。具体内容可以查看这里Set Kubelet parameters via a config file。最初Kubernetes这么做是为了支持动态Kubelet配置（Dynamic Kubelet Configuration），但动态Kubelet配置特性从k8s 1.22中已弃用，并在1.24中被移除。如果需要调整集群汇总所有节点kubelet的配置，还是推荐使用ansible等工具将配置分发到各个节点。
+
+
+
+
 
 

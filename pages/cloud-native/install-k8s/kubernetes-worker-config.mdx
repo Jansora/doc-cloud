@@ -3,9 +3,23 @@
 import { Callout } from 'nextra-theme-docs'
 
 <Callout type="warning" emoji="⚠️">
-    Master, Worker 1, Worker 2 节点安装请参照具体步骤
+     Worker 1, Worker 2 节点安装请参照具体步骤
 </Callout>
 
+
+```
+kubeadm join 192.168.88.101:6443 --token 0qinrd.77drhpnlvc2fvllo \
+--discovery-token-ca-cert-hash sha256:01df34acd184e43e5ed37fc292e30394588a7476a4b907149adfece88b2361d8
+```
+
+在master节点上执行命令查看集群中的节点(需要等待新加入节点上的calico-node pod启动正常)：
+
+
+kubectl get nodes
+NAME     STATUS   ROLES           AGE   VERSION
+master   Ready    control-plane   13h   v1.28.2
+node1    Ready    <none>            13h   v1.28.2
+node2    Ready    <none>          13h   v1.28.2
 
 ## kubeadm 安装 Kubernetes 集群
 
