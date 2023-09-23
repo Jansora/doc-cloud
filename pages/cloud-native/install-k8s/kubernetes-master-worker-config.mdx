@@ -458,6 +458,13 @@ l3     Ready    <none>   5m7s    v1.28.2
 l4     Ready    <none>   4m56s   v1.28.2
 ```
 
+
+## docker 仓库密钥管理
+```
+kubectl create secret docker-registry ccr.ccs.tencentyun.com --docker-server=ccr.ccs.tencentyun.com --docker-username=100000668773 --docker-password=xxx
+```
+
+
 ## 附录. FAQ
 ### Q: kube-flannel STATUS CrashLoopBackOff ?
 

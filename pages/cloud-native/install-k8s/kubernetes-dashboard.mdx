@@ -146,3 +146,36 @@ server {
 喜闻悦见
 [https://kubernetes.fabric.jansora.com](https://kubernetes.fabric.jansora.com)
 ![lBc5i7](https://cdn.jansora.com/files/uPic/2023/09/21/lBc5i7.png)
+
+## 等等. 还需要配置 dashboard 权限
+否则页面是空的
+> namespace 默认是 default 请根据实际的填写
+
+`kubectl apply -f https://storage.qiniu.jansora.com/files/uPic/2023/05/12/dashboard-admin.yaml`
+
+```yaml filename="dashboard-admin.yaml"
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kubernetes-dashboard
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: kubernetes-dashboard
+    namespace: default
+```
+`kubectl apply -f dashboard-admin.yaml`
+## 调整dashboard token 失效期
+默认的 dashboard token 好像是 10 分钟.
+
+从 dashboard web ui 编辑 dashboard deployment yaml
+
+![KPeYZn](https://storage.qiniu.jansora.com/files/uPic/2023/05/12/KPeYZn.jpg)
+
+调整 args `--token-ttl=3153600000` 点 Update
+
+![tmfQdK](https://storage.qiniu.jansora.com/files/uPic/2023/05/12/tmfQdK.jpg)

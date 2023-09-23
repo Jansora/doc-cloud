@@ -20,13 +20,21 @@ mkdir -p kubernetes
 
 > 默认的 `StorageClass` 名称是 `nfs-client`
 
-```
- helm install -n kube-system nfs-client nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
-    --set nfs.server=192.168.88.88 \
-    --set nfs.path=/nfs/kubernetes \
-    --set storageClass.defaultClass=true
 
 ```
+helm repo add nfs-subdir-external-provisioner https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
+helm repo update
+
+ helm install -n kube-system nfs-client  nfs-subdir-external-provisioner/nfs-subdir-external-provisioner\
+    --set nfs.server=192.168.88.1 \
+    --set nfs.path=/nfs/kubernetes \
+    --set storageClass.defaultClass=true \
+    --set image.repository=ccr.ccs.tencentyun.com/jansora/nfs-subdir-external-provisioner \
+    --set image.tag=v4.0.0 \
+```
+
+> 默认的镜像被墙了,
+
 ## 检测部署状态为 running
 
 Master 节点执行
