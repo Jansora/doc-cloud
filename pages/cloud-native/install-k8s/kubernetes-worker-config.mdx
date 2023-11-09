@@ -18,8 +18,8 @@ kubeadm join 192.168.88.101:6443 --token 0qinrd.77drhpnlvc2fvllo \
 kubectl get nodes
 NAME     STATUS   ROLES           AGE   VERSION
 master   Ready    control-plane   13h   v1.28.2
-node1    Ready    <none>            13h   v1.28.2
-node2    Ready    <none>          13h   v1.28.2
+node1    Ready    none            13h   v1.28.2
+node2    Ready    none            13h   v1.28.2
 
 ## kubeadm 安装 Kubernetes 集群
 
@@ -464,11 +464,12 @@ Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
 ## 主节点检测是否成功
 MASTER 节点执行
 ```
+
 root@l2:~# kubectl get nodes
 NAME   STATUS   ROLES    AGE     VERSION
 l2     Ready    master   22m     v1.28.2
-l3     Ready    <none>   5m7s    v1.28.2
-l4     Ready    <none>   4m56s   v1.28.2
+l3     Ready    none   5m7s    v1.28.2
+l4     Ready    none   4m56s   v1.28.2
 ```
 
 ## 附录. FAQ
