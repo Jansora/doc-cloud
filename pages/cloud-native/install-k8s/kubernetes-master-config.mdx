@@ -1,11 +1,6 @@
-# 6. K8S 主从配置
+# 6. K8S master 节点安装
 
 import { Callout } from 'nextra-theme-docs'
-
-<Callout type="warning" emoji="⚠️">
-    Master, Worker 1, Worker 2 节点安装请参照具体步骤
-</Callout>
-
 
 ## kubeadm 安装 Kubernetes 集群
 
@@ -111,7 +106,7 @@ volumeStatsAggPeriod: 0s
 
 > advertiseAddress `10.0.16.15` 注意修改为自己的 master ip
 
-```yaml
+```yaml filename="/etc/kubernetes/kubeadm-init.yaml"
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: InitConfiguration
 localAPIEndpoint:
@@ -144,7 +139,7 @@ mode: ipvs
 
 这里定制了imageRepository为阿里云的registry，避免因gcr被墙，无法直接拉取镜像。criSocket设置了容器运行时为containerd。 同时设置kubelet的cgroupDriver为systemd，设置kube-proxy代理模式为ipvs。
 
-在开始初始化集群之前可以使用`kubeadm config images pull --config kubeadm-init.yaml`预先在各个服务器节点上拉取所k8s需要的容器镜像。
+在开始初始化集群之前可以使用`kubeadm config images pull --config /etc/kubernetes/kubeadm-init.yaml`预先在各个服务器节点上拉取所k8s需要的容器镜像。
 
 ```
 kubeadm config images pull --config kubeadm-init.yaml
@@ -158,7 +153,7 @@ kubeadm config images pull --config kubeadm-init.yaml
 [config/images] Pulled registry.aliyuncs.com/google_containers/coredns:v1.10.1
 ```
 
-接下来使用kubeadm初始化集群 `kubeadm init --config kubeadm-init.yaml`
+接下来使用kubeadm初始化集群 `kubeadm init --config  /etc/kubernetes/kubeadm-init.yaml`
 
 ```
 kubeadm init --config kubeadm-init.yaml
@@ -260,30 +255,10 @@ kubeadm join 192.168.88.101:6443 --token 0qinrd.77drhpnlvc2fvllo \
         --discovery-token-ca-cert-hash sha256:01df34acd184e43e5ed37fc292e30394588a7476a4b907149adfece88b2361d8
 ```
 
-查看一下集群状态，确认个组件都处于healthy状态，结果出现了错误:
-
-
-```
- kubectl get cs
-Warning: v1 ComponentStatus is deprecated in v1.19+
-NAME                 STATUS    MESSAGE   ERROR
-scheduler            Healthy   ok
-controller-manager   Healthy   ok
-etcd-0               Healthy   ok
-
-kubectl get nodes
-NAME     STATUS     ROLES           AGE   VERSION
-master   NotReady   control-plane   30m   v1.28.2
-node1    NotReady   <none>          7s    v1.28.2
-node2    NotReady   <none>          30m   v1.28.2
-```
-
-
 
 
 import { Tab, Tabs } from 'nextra-theme-docs';
 
-在主节点 `Master` 上安装 `nfs-server`
 
 <Tabs items={["安装命令", "安装日志"]}>
     <Tab>
@@ -392,76 +367,20 @@ kubeadm join 192.168.88.101:6443 --token 0mynwm.10bk3hdn34e9lgo \
 ```
 echo "export KUBECONFIG=/etc/kubernetes/admin.conf" >> /etc/profile
 ```
-## 配置 网络插件 flannel
 
-> Master (MASTER) 节点执行
-
-`kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml`
+查看一下集群状态，确认个组件都处于healthy状态，结果出现了错误:
 
 ```
-root@master:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-podsecuritypolicy.policy/psp.flannel.unprivileged created
-clusterrole.rbac.authorization.k8s.io/flannel created
-clusterrolebinding.rbac.authorization.k8s.io/flannel created
-serviceaccount/flannel created
-configmap/kube-flannel-cfg created
-daemonset.apps/kube-flannel-ds created
-root@l2:~# kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
-clusterrole.rbac.authorization.k8s.io/flannel configured
-clusterrolebinding.rbac.authorization.k8s.io/flannel unchanged
-```
-## 等到状态变为正常
-```
-root@master:~# kubectl get pods -n kube-system
-NAME                         READY   STATUS    RESTARTS   AGE
-coredns-6c76c8bb89-n7pwh     1/1     Running   0          6m29s
-coredns-6c76c8bb89-tkgb9     1/1     Running   0          6m29s
-etcd-u1                      1/1     Running   0          6m39s
-kube-apiserver-u1            1/1     Running   0          6m39s
-kube-controller-manager-u1   1/1     Running   0          6m39s
-kube-proxy-2xzm6             1/1     Running   0          4m19s
-kube-proxy-44lzm             1/1     Running   0          6m29s
-kube-proxy-nr74n             1/1     Running   0          4m2s
-kube-scheduler-u1            1/1     Running   0          6m39s
-```
-## 将 slave 节点加入到集群
-
-具体命令取决于主节点创建时打印的日志
-> Worker 1 / Worker 2 (WORKER) 节点执行
-
-`kubeadm join 192.168.88.101:6443 --token 0mynwm.10bk3hdn34e9lgo \ --discovery-token-ca-cert-hash sha256:51a66dd07069658f42d33923ecee7059a3b35820128a3d5acfaa7d374a9b8494`
-
-部分日志如下
-```
-[preflight] Running pre-flight checks
-[WARNING IsDockerSystemdCheck]: detected "cgroupfs" as the Docker cgroup driver. The recommended driver is "systemd". Please follow the guide at https://kubernetes.io/docs/setup/cri/
-[preflight] Reading configuration from the cluster...
-[preflight] FYI: You can look at this config file with 'kubectl -n kube-system get cm kubeadm-config -oyaml'
-[kubelet-start] Writing kubelet configuration to file "/var/lib/kubelet/config.yaml"
-[kubelet-start] Writing kubelet environment file with flags to file "/var/lib/kubelet/kubeadm-flags.env"
-[kubelet-start] Starting the kubelet
-[kubelet-start] Waiting for the kubelet to perform the TLS Bootstrap...
-
-This node has joined the cluster:
-* Certificate signing request was sent to apiserver and a response was received.
-* The Kubelet was informed of the new secure connection details.
-
-Run 'kubectl get nodes' on the control-plane to see this node join the cluster.
-```
-## 主节点检测是否成功
-MASTER 节点执行
-```
-root@l2:~# kubectl get nodes
-NAME   STATUS   ROLES    AGE     VERSION
-l2     Ready    master   22m     v1.28.2
-l3     Ready    <none>   5m7s    v1.28.2
-l4     Ready    <none>   4m56s   v1.28.2
+root@master:/mnt/nfs/share/kubernetes# kubectl get nodes
+NAME     STATUS     ROLES           AGE     VERSION
+master   NotReady   control-plane   3m38s   v1.28.2
 ```
 
+这是正常的, 因为网络组件还没有装.
 
 ## docker 仓库密钥管理
 ```
-kubectl create secret docker-registry ccr.ccs.tencentyun.com --docker-server=ccr.ccs.tencentyun.com --docker-username=100000668773 --docker-password=xxx
+kubectl create secret docker-registry ccr.ccs.tencentyun.com --docker-server=ccr.ccs.tencentyun.com --docker-username=xxxxxx --docker-password=xxx  --docker-email="xxx@gmail.com"
 ```
 
 

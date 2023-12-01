@@ -8,10 +8,10 @@ import {Callout} from "nextra-theme-docs";
     Master 节点执行
 </Callout>
 
-这里将node1(`192.168.88.102`)作为边缘节点，打上Label：
+这里将 worker1(`192.168.88.102`) 作为边缘节点，打上Label：
 
 ```
-kubectl label node node1 node-role.kubernetes.io/edge=
+kubectl label node worker1 node-role.kubernetes.io/edge=
 
 ```
 

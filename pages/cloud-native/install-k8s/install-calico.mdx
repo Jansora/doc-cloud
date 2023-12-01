@@ -76,21 +76,19 @@ helm install calico tigera-operator-v3.26.0.tgz -n kube-system  --create-namespa
 
 等待并确认所有pod处于Running状态:
 
+监测 calico 以及集群状态
 ```
-kubectl get pod -n kube-system | grep tigera-operator
-tigera-operator-689d868448-hxzdf   1/1     Running   0          117s
-
-kubectl get pods -n calico-system
-NAME                                      READY   STATUS    RESTARTS   AGE
-calico-kube-controllers-7ffbf7c7d-56t7h   1/1     Running   0          12h
-calico-node-2ptk8                         1/1     Running   0          12h
-calico-node-bxggx                         1/1     Running   0          12h
-calico-node-xrp2q                         1/1     Running   0          12h
-calico-typha-576c5874b9-gvtmx             1/1     Running   0          12h
-calico-typha-576c5874b9-t6wcz             1/1     Running   0          12h
-csi-node-driver-cxlzr                     2/2     Running   0          12h
-csi-node-driver-jtm4f                     2/2     Running   0          12h
-csi-node-driver-srtvh                     2/2     Running   0          12h
+root@master:/mnt/nfs/share/kubernetes# kubectl get nodes
+NAME     STATUS   ROLES           AGE   VERSION
+master   Ready    control-plane   12m   v1.28.2
+root@master:/mnt/nfs/share/kubernetes# kubectl get pod -n kube-system | grep tigera-operator
+tigera-operator-689d868448-b6ff8   1/1     Running   0          5m20s
+root@master:/mnt/nfs/share/kubernetes# kubectl get pods -n calico-system
+NAME                                       READY   STATUS    RESTARTS   AGE
+calico-kube-controllers-67ddfd6d9d-v9494   1/1     Running   0          5m20s
+calico-node-m4w7j                          1/1     Running   0          5m20s
+calico-typha-b4c9b5fd8-5w7dx               1/1     Running   0          5m20s
+csi-node-driver-l6js2                      2/2     Running   0          5m20s
 
 ```
 
