@@ -109,13 +109,13 @@ volumeStatsAggPeriod: 0s
 
 从默认的配置中可以看到，可以使用imageRepository定制在集群初始化时拉取k8s所需镜像的地址。基于默认配置定制出本次使用kubeadm初始化集群所需的配置文件kubeadm.yaml：
 
-> advertiseAddress `192.168.96.151` 注意修改为自己的 master ip
+> advertiseAddress `10.0.16.15` 注意修改为自己的 master ip
 
 ```yaml
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: InitConfiguration
 localAPIEndpoint:
-  advertiseAddress: 192.168.96.151
+  advertiseAddress: 10.0.16.15
   bindPort: 6443
 nodeRegistration:
   criSocket: unix:///run/containerd/containerd.sock
@@ -125,7 +125,7 @@ nodeRegistration:
 ---
 apiVersion: kubeadm.k8s.io/v1beta3
 kind: ClusterConfiguration
-kubernetesVersion: 1.27.2
+kubernetesVersion: 1.28.2
 imageRepository: registry.aliyuncs.com/google_containers
 networking:
   podSubnet: 10.244.0.0/16
