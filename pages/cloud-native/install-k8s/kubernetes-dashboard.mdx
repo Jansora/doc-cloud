@@ -81,7 +81,34 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IlU1SlpSTS1YekNuVzE0T1k5TUdTOFFqN25URWxKckt6OUJBT0xz
 ```
 
 ##  配置 ingress 转发
-
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kubernetes-dashboard-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+#  annotations:
+#    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - dashboard.kubernetes.jansora.com
+      secretName: wildcard.jansora.com
+  rules:
+    - host: dashboard.kubernetes.jansora.com
+      http:
+        paths:
+          - backend:
+              service:
+                name: kubernetes-dashboard
+                port:
+                  number: 443
+            pathType: Prefix
+            path: /
+```
 
 
 

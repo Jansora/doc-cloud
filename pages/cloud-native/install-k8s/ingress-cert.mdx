@@ -2,7 +2,7 @@
 
 定期证书申请 (仅供参考)
 
-```
+```bash
 /root/.acme.sh/acme.sh --issue --force --dns dns_ali -d 'jansora.com' -d '*.jansora.com'  -d '*.kubernetes.jansora.com'  -d '*.fabric.jansora.com' -d '*.transfer.jansora.com'
 
 # 拷贝到 master 节点
@@ -25,7 +25,7 @@ kubectl create secret tls wildcard.jansora.com \
 
 配置参考
 
-```
+```yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
