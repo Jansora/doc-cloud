@@ -9,9 +9,10 @@
   "install-calico": "8. 安装网络插件 calico",
   "kubernetes-worker-config": "9. K8S 从节点加入",
   "kubernetes-pv-config": "10. 动态 PV 配置",
-  "kubernetes-dashboard": "11. 部署 Dashboard",
-  "nginx-ingress-controller": "12. 部署 Nginx Ingress ",
-  "kubernetes-metric-server": "13. 部署 Metric Server (可选) ",
-  "validate-k8s": "14. 验证 kubernetes 集群",
-  "add-k8s-nodes": "15. 集群扩容"
+  "nginx-ingress-controller": "11. 部署 Nginx Ingress ",
+  "ingress-cert": "12. 部署证书",
+  "kubernetes-dashboard": "13. 部署 Dashboard",
+  "kubernetes-metric-server": "14. 部署 Metric Server (可选) ",
+  "validate-k8s": "15. 验证 kubernetes 集群",
+  "add-k8s-nodes": "16. 集群扩容"
 }

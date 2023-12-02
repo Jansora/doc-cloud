@@ -6,45 +6,6 @@ import {Callout} from "nextra-theme-docs";
     Master 节点安装
 </Callout>
 
-先部署metrics-server：
-
-```
-wget https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.6.3/components.yaml
-
-```
-
-修改components.yaml中的image为docker.io/unreachableg/k8s.gcr.io_metrics-server_metrics-server:v0.6.3。 修改components.yaml中容器的启动参数，加入--kubelet-insecure-tls。
-
-
-```
-kubectl apply -f components.yaml
-
-```
-metrics-server的pod正常启动后，等一段时间就可以使用kubectl top查看集群和pod的metrics信息:
-
-```
-kubectl top node
-NAME    CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
-node1   509m         12%    3654Mi          47%
-node2   133m         3%     1786Mi          23%
-node3   117m         2%     1810Mi          23%
-
-kubectl top pod -n kube-system
-NAME                               CPU(cores)   MEMORY(bytes)
-coredns-74586cf9b6-575nl           6m           16Mi
-coredns-74586cf9b6-mbn8s           5m           17Mi
-etcd-node1                         49m          91Mi
-kube-apiserver-node1               142m         490Mi
-kube-controller-manager-node1      38m          54Mi
-kube-proxy-k5lzs                   26m          19Mi
-kube-proxy-rb5pf                   9m           15Mi
-kube-proxy-w5zpk                   27m          16Mi
-kube-scheduler-node1               7m           18Mi
-metrics-server-8dfd488f5-r8pbh     8m           21Mi
-tigera-operator-5fb55776df-wxbph   10m          38Mi
-```
-
-
 
 ## helm 安装 Dashboard
 添加chart repo:
@@ -81,6 +42,7 @@ Get the Kubernetes Dashboard URL by running:
 调整 Service kubernetes-dashboard
 
 从 ClusterIP 转化为 NodePort , 新增 `nodePort: 30843`
+
 ```
 kubectl edit service kubernetes-dashboard
 ```
@@ -118,7 +80,13 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IlU1SlpSTS1YekNuVzE0T1k5TUdTOFFqN25URWxKckt6OUJBT0xz
 
 ```
 
+##  配置 ingress 转发
+
+
+
+
 ## 配置 nginx 转发
+如果外部有 nginx 也可以走 nginx 转发
 
 > 注意 proxy_pass 的协议是 https
 
@@ -146,6 +114,9 @@ server {
 喜闻悦见
 [https://kubernetes.fabric.jansora.com](https://kubernetes.fabric.jansora.com)
 ![lBc5i7](https://cdn.jansora.com/files/uPic/2023/09/21/lBc5i7.png)
+
+
+
 
 ## 等等. 还需要配置 dashboard 权限
 否则页面是空的
