@@ -12,7 +12,7 @@
   "nginx-ingress-controller": "11. 部署 Nginx Ingress ",
   "ingress-cert": "12. 部署证书",
   "kubernetes-dashboard": "13. 部署 Dashboard",
-  "kubernetes-metric-server": "14. 部署 Metric Server (可选) ",
+  "kubernetes-metric-server": "14. 部署 Metric Server ",
   "validate-k8s": "15. 验证 kubernetes 集群",
   "add-k8s-nodes": "16. 集群扩容",
   "remove-nodes": "17. 移除节点"

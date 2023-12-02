@@ -41,7 +41,7 @@ Kubernetes: `1.28.2`
 
 创建 `/etc/modules-load.d/containerd.conf` 配置文件，确保在系统启动时自动加载所需的内核模块，以满足容器运行时的要求:
 
-```
+```bash
 cat << EOF > /etc/modules-load.d/containerd.conf
 overlay
 br_netfilter
@@ -49,14 +49,14 @@ EOF
 ```
 
 执行以下命令使配置生效:
-```
+```bash
 modprobe overlay
 modprobe br_netfilter
 ```
 
 创建`/etc/sysctl.d/99-kubernetes-cri.conf`配置文件：
 
-```
+```bash
 cat << EOF > /etc/sysctl.d/99-kubernetes-cri.conf
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
@@ -66,7 +66,7 @@ EOF
 ```
 执行以下命令使配置生效:
 
-```
+```bash
 sysctl -p /etc/sysctl.d/99-kubernetes-cri.conf
 ```
 <Callout type="warning" emoji="⚠️">
@@ -85,7 +85,7 @@ ip_vs_sh
 nf_conntrack_ipv4
 ```
 创建`/etc/modules-load.d/ipvs.conf`文件，保证在节点重启后能自动加载所需模块:
-```
+```bash
 cat > /etc/modules-load.d/ipvs.conf <<EOF
 ip_vs
 ip_vs_rr
@@ -96,7 +96,7 @@ EOF
 
 执行以下命令使配置立即生效:
 
-```
+```bash
 modprobe ip_vs
 modprobe ip_vs_rr
 modprobe ip_vs_wrr
@@ -105,7 +105,7 @@ modprobe ip_vs_sh
 使用`lsmod | grep -e ip_vs -e nf_conntrack`命令查看是否已经正确加载所需的内核模块。
 接下来还需要确保各个节点上已经安装了ipset软件包，为了便于查看ipvs的代理规则，最好安装一下管理工具ipvsadm。
 
-```
+```bash
 apt install -y ipset ipvsadm
 ```
 
