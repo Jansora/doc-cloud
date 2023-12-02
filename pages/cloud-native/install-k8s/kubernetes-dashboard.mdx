@@ -58,17 +58,18 @@ eyJhbGciOiJSUzI1NiIsImtpZCI6IlU1SlpSTS1YekNuVzE0T1k5TUdTOFFqN25URWxKckt6OUJBT0xz
 使用 port-forward 转发 (临时方案, 需要阻塞终端)
 ```bash
  kubectl -n default port-forward $POD_NAME 30443:8443 --address 0.0.0.0
-```bash
+```
 ### 第二种: NodePort 转发 + 外部 nginx 转发
 
 调整 Service kubernetes-dashboard
 
 从 ClusterIP 转化为 NodePort , 新增 `nodePort: 30843`
 
-```
+```bash
 kubectl edit service kubernetes-dashboard
 ```
-```
+
+```yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -88,7 +89,7 @@ spec:
 
 > 注意 proxy_pass 的协议是 https
 
-```
+```bash
 
 server {
 listen 443 ssl http2;
