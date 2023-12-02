@@ -8,7 +8,7 @@ import {Callout} from "nextra-theme-docs";
     Master 节点执行
 </Callout>
 
-这里将 worker1(`192.168.88.102`) 作为边缘节点，打上Label：
+这里将 worker2 (`192.168.88.103`) 作为边缘节点，打上Label：
 
 ```
 kubectl label node worker2 node-role.kubernetes.io/edge=
@@ -95,7 +95,7 @@ NAME                                       READY   STATUS    RESTARTS   AGE
 ingress-nginx-controller-7c96f857f-cbmhx   1/1     Running   0          39s
 ```
 
-测试访问`http://192.168.88.102`返回默认的nginx 404页，则部署完成。
+测试访问`http://192.168.88.103`返回默认的nginx 404页，则部署完成。
 
 
 
