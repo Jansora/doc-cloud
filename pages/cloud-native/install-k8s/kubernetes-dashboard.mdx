@@ -118,10 +118,8 @@ kind: Ingress
 metadata:
   name: kubernetes-dashboard-ingress
   annotations:
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-#  annotations:
-#    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true" # 80 -> 443
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS" # 代理 dashboard 的 https 协议
 spec:
   ingressClassName: nginx
   tls:
