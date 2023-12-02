@@ -2,8 +2,8 @@
   "explain": "1. 安装准备",
   "install-nfs": "2. 安装 NFS 共享存储",
   "disable-swap": "3. 禁用交换分区",
-  "install-containerd": "4. 安装 Containerd (v1.7.2)",
-  "install-kubernetes": "5. 安装 K8S (1.28.2) 依赖包",
+  "install-containerd": "4. 安装 Containerd",
+  "install-kubernetes": "5. 安装 kubeadm",
   "kubernetes-master-config": "6. K8S master节点安装",
   "helm": "7. 安装 helm",
   "install-calico": "8. 安装网络插件 calico",
@@ -14,5 +14,6 @@
   "kubernetes-dashboard": "13. 部署 Dashboard",
   "kubernetes-metric-server": "14. 部署 Metric Server (可选) ",
   "validate-k8s": "15. 验证 kubernetes 集群",
-  "add-k8s-nodes": "16. 集群扩容"
+  "add-k8s-nodes": "16. 集群扩容",
+  "remove-nodes": "17. 移除节点"
 }
